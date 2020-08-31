@@ -9,7 +9,13 @@ class Quadrillage extends Component{
 
     constructor(props) {
         super(props);
-        this.canvasRef = React.createRef();
+        this.canvasRef = new React.createRef();
+        this.width = 400;
+        this.height = 400;
+        this.matrice = new Array( 20, 20);
+        this.matrice.forEach((i,j) => {
+            this.matrice[0, 0] = 0;
+        })
     }
 
     /* Fonction qui trace le quadrillage */
@@ -47,11 +53,18 @@ class Quadrillage extends Component{
 
         let nombre = 0;
         let animationFrameId;
+        let test = true;
 
         const render = () => {
-            nombre += 20;
-            this.dessinerRect(pinceau, canvas, nombre);
-            if (nombre < 300) {
+            if (nombre < 300 && test) {
+                nombre += 20;
+                this.dessinerRect(pinceau, canvas, nombre);
+                animationFrameId = window.requestAnimationFrame(render);
+            } else {
+                test = false;
+                nombre -= 20;
+                pinceau.fillStyle = '#FFFFFF';
+                this.dessinerRect(pinceau, canvas, nombre);
                 animationFrameId = window.requestAnimationFrame(render);
             }
         }
@@ -63,7 +76,7 @@ class Quadrillage extends Component{
     render(){
         return(
             <div style={{marginTop: '10rem'}}>
-                <canvas ref={this.canvasRef} width={400} height={400} style={{border: '1px solid black'}}/>
+                <canvas ref={this.canvasRef} width={this.width} height={this.height} style={{border: '1px solid black'}}/>
             </div>
         )
     }
