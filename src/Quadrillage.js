@@ -3,20 +3,39 @@ import React, {useRef, useEffect, Component} from 'react'
 
 class Quadrillage extends Component{
 
+    constructor(props) {
+        super(props);
+        this.canvasRef = React.createRef();
+    }
+
     /* Cette fonction est appelée dès que le DOM est mis à jour */
     componentDidMount() {
         /* On récupère la référence puis le contexte effectif du canvas */
-        const canvas = this.refs.canvas
-        const ctx = canvas.getContext("2d")
+        const canvas = this.canvasRef.current;
+        const pinceau = canvas.getContext("2d");
 
         /* C'est sur le contexte que l'on va effectivement dessiner */
-        ctx.fillStyle = '#000000'
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+        pinceau.fillStyle = '#000000';
+        //pinceau.fillRect(0, 0, pinceau.canvas.width, pinceau.canvas.height);
+
+        let ecart = 20;
+
+        for (let h = ecart; h < canvas.height; h += ecart){
+            pinceau.moveTo(0, h);
+            pinceau.lineTo(canvas.width, h);
+            pinceau.stroke();
+        }
+
+        for (let l = ecart; l < canvas.width; l += ecart){
+            pinceau.moveTo(l, 0);
+            pinceau.lineTo(l, canvas.height);
+            pinceau.stroke();
+        }
     }
 
     render(){
         return(
-            <canvas ref="canvas" width={640} height={425} />
+            <canvas ref={this.canvasRef} width={400} height={400} style={{border: '1px solid black'}}/>
         )
     }
 }
