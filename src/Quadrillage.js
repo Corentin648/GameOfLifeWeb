@@ -18,45 +18,108 @@ class Quadrillage extends Component{
         this.matrice = Array(20).fill(0).map(() => new Array(20).fill(0));
     }
 
+    compterVoisines = (i, j) => {
+        let voisines = 0;
+        if (this.matrice[i-1][j-1] === 1){
+            voisines++;
+        }
+        if (this.matrice[i-1][j] === 1){
+            voisines++;
+        }
+        if (this.matrice[i-1][j+1] === 1){
+            voisines++;
+        }
+        if (this.matrice[i][j+1] === 1){
+            voisines++;
+        }
+        if (this.matrice[i+1][j+1] === 1){
+            voisines++;
+        }
+        if (this.matrice[i+1][j] === 1){
+            voisines++;
+        }
+        if (this.matrice[i+1][j-1] === 1){
+            voisines++;
+        }
+        if (this.matrice[i][j-1] === 1){
+            voisines++;
+        }
+        console.log(voisines);
+        return voisines;
+    }
 
-    initPatern = () => {
+    evoluer = () => {
+        var voisines;
+        for (let i = 1;i<19;i++) {
+            for (let j = 1; j < 19; j++) {
+                voisines = this.compterVoisines(i,j);
+                if (i === 11 && j === 10){
+                    console.log(voisines);
+                }
+                if (this.matrice[i][j] === 1) {
+                    if (voisines === 1 || voisines === 0) {
+                        this.matrice[i][j] = 0;
+                    }
+                }
+                else if (this.matrice[i][j] === 0) {
+                    if (voisines === 3) {
+                        this.matrice[i][j] = 1;
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+    initPattern = () => {
         this.matrice[10][10] = 1;
-        this.matrice[10][11] = 1;
-        this.matrice[10][12] = 1;
-        this.matrice[10][13] = 1;
-        this.matrice[10][14] = 1;
+        this.matrice[11][10] = 1;
+        this.matrice[12][10] = 1;
+        this.matrice[13][10] = 1;
+        this.matrice[14][10] = 1;
     }
 
     /* Fonction qui trace le quadrillage */
     initDessin = (pinceau, canvas) => {
+        pinceau.clearRect(0, 0, canvas.width, canvas.height);
         pinceau.fillStyle = '#000000';
 
-        /* On dessine ici le patern proposé dans initPatern */
-        for (let i = 0;i<20;i++){
-            for (let j = 0;j<20;j++){
-                if (this.matrice[i][j] == 1){
-                    pinceau.fillRect(i*20, j*20, pinceau.canvas.width / 20, pinceau.canvas.height / 20);
-                }
-            }
-        }
-
+        /* On dessine ici la grille */
         let ecart = 20;
-
         for (let h = ecart; h < canvas.height; h += ecart) {
             pinceau.moveTo(0, h);
             pinceau.lineTo(canvas.width, h);
             pinceau.stroke();
         }
-
         for (let l = ecart; l < canvas.width; l += ecart) {
             pinceau.moveTo(l, 0);
             pinceau.lineTo(l, canvas.height);
             pinceau.stroke();
         }
+
+        /* On dessine ici le patern proposé dans initPattern */
+        /*
+        for (let i = 0;i<20;i++){
+            for (let j = 0;j<20;j++){
+                if (this.matrice[i][j] === 1){
+                    pinceau.fillRect(i*20, j*20, pinceau.canvas.width / 20, pinceau.canvas.height / 20);
+                }
+            }
+        }
+        */
     }
 
-    dessinerRect = (pinceau, canvas, nombre) => {
-        pinceau.fillRect(nombre, nombre, pinceau.canvas.width / 20, pinceau.canvas.height / 20);
+    /* Fonction qui dessine en noir les cases "vivantes" */
+    dessinerRectangles = (pinceau) => {
+        for (let i = 0;i<20;i++){
+            for (let j = 0;j<20;j++){
+                if (this.matrice[i][j] === 1){
+                    pinceau.fillRect(i*20, j*20, pinceau.canvas.width / 20, pinceau.canvas.height / 20);
+                }
+            }
+        }
     }
 
 
@@ -66,7 +129,7 @@ class Quadrillage extends Component{
         /* On récupère la référence puis le contexte effectif du canvas */
         const canvas = this.canvasRef.current;
         const pinceau = canvas.getContext("2d");
-        this.initPatern();
+        this.initPattern();
         this.initDessin(pinceau, canvas);
 
         let nombre = 0;
@@ -74,6 +137,7 @@ class Quadrillage extends Component{
         let test = true;
 
         const render = () => {
+            /*
             if (nombre < 300 && test) {
                 nombre += 20;
                 this.dessinerRect(pinceau, canvas, nombre);
@@ -85,9 +149,19 @@ class Quadrillage extends Component{
                 this.dessinerRect(pinceau, canvas, nombre);
                 animationFrameId = window.requestAnimationFrame(render);
             }
+             */
+            this.initDessin(pinceau, canvas);
+            this.dessinerRectangles(pinceau);
+            this.evoluer();
+            //this.initDessin(pinceau, canvas);
+            //this.dessinerRectangles(pinceau);
+            //animationFrameId = window.requestAnimationFrame(render);
+            //this.dessinerRectangles(pinceau);
+
+
         }
 
-        //render();
+        render();
     }
 
     /* Cette fonction est celle qui va être appelée par le composant appelant  */
