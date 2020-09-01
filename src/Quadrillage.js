@@ -44,30 +44,29 @@ class Quadrillage extends Component{
         if (this.matrice[i][j-1] === 1){
             voisines++;
         }
-        console.log(voisines);
+        //console.log(voisines, i, j);
         return voisines;
     }
 
     evoluer = () => {
-        var voisines;
+        let voisines;
+        let  mat = Array(20).fill(0).map(() => new Array(20).fill(0));
         for (let i = 1;i<19;i++) {
             for (let j = 1; j < 19; j++) {
                 voisines = this.compterVoisines(i,j);
-                if (i === 11 && j === 10){
-                    console.log(voisines);
-                }
                 if (this.matrice[i][j] === 1) {
-                    if (voisines === 1 || voisines === 0) {
-                        this.matrice[i][j] = 0;
+                    if (voisines === 3 || voisines === 2) {
+                        mat[i][j] = 1;
                     }
                 }
                 else if (this.matrice[i][j] === 0) {
                     if (voisines === 3) {
-                        this.matrice[i][j] = 1;
+                        mat[i][j] = 1;
                     }
                 }
             }
         }
+        this.matrice = mat;
     }
 
 
@@ -132,32 +131,26 @@ class Quadrillage extends Component{
         this.initPattern();
         this.initDessin(pinceau, canvas);
 
-        let nombre = 0;
         let animationFrameId;
-        let test = true;
+
+        const FPS = 2;
+        const delay = 1000/FPS;
+        let previous = 0;
 
         const render = () => {
-            /*
-            if (nombre < 300 && test) {
-                nombre += 20;
-                this.dessinerRect(pinceau, canvas, nombre);
-                animationFrameId = window.requestAnimationFrame(render);
-            } else {
-                test = false;
-                nombre -= 20;
-                pinceau.fillStyle = '#FFFFFF';
-                this.dessinerRect(pinceau, canvas, nombre);
-                animationFrameId = window.requestAnimationFrame(render);
+            animationFrameId = window.requestAnimationFrame(render);
+
+            const now = Date.now();
+            if (now - previous < delay ){
+                return;
             }
-             */
+            previous = now;
+
             this.initDessin(pinceau, canvas);
             this.dessinerRectangles(pinceau);
             this.evoluer();
-            //this.initDessin(pinceau, canvas);
-            //this.dessinerRectangles(pinceau);
-            //animationFrameId = window.requestAnimationFrame(render);
-            //this.dessinerRectangles(pinceau);
-
+            this.initDessin(pinceau, canvas);
+            this.dessinerRectangles(pinceau);
 
         }
 
