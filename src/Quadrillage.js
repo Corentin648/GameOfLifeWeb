@@ -12,16 +12,33 @@ class Quadrillage extends Component{
         this.canvasRef = new React.createRef();
         this.width = 400;
         this.height = 400;
-        this.matrice = new Array( 20, 20);
-        this.matrice.forEach((i,j) => {
-            this.matrice[0, 0] = 0;
-        })
+
+        /* La méthode fill remplie l'array avec des 0 */
+        /* La méthode map applique à chaque élément la méthode en argument */
+        this.matrice = Array(20).fill(0).map(() => new Array(20).fill(0));
+    }
+
+
+    initPatern = () => {
+        this.matrice[10][10] = 1;
+        this.matrice[10][11] = 1;
+        this.matrice[10][12] = 1;
+        this.matrice[10][13] = 1;
+        this.matrice[10][14] = 1;
     }
 
     /* Fonction qui trace le quadrillage */
     initDessin = (pinceau, canvas) => {
         pinceau.fillStyle = '#000000';
-        pinceau.fillRect(0, 0, pinceau.canvas.width / 20, pinceau.canvas.height / 20);
+
+        /* On dessine ici le patern proposé dans initPatern */
+        for (let i = 0;i<20;i++){
+            for (let j = 0;j<20;j++){
+                if (this.matrice[i][j] == 1){
+                    pinceau.fillRect(i*20, j*20, pinceau.canvas.width / 20, pinceau.canvas.height / 20);
+                }
+            }
+        }
 
         let ecart = 20;
 
@@ -49,6 +66,7 @@ class Quadrillage extends Component{
         /* On récupère la référence puis le contexte effectif du canvas */
         const canvas = this.canvasRef.current;
         const pinceau = canvas.getContext("2d");
+        this.initPatern();
         this.initDessin(pinceau, canvas);
 
         let nombre = 0;
@@ -69,7 +87,7 @@ class Quadrillage extends Component{
             }
         }
 
-        render();
+        //render();
     }
 
     /* Cette fonction est celle qui va être appelée par le composant appelant  */
