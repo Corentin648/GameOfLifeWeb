@@ -13,6 +13,7 @@ class Quadrillage extends Component{
         this.canvasRef = new React.createRef();
         this.casesLargeur = 30;    // nombre de cases en largeur
         this.casesHauteur = 30;   // nombre de cases en hauteur
+        this.tailleCase = 20;   // taille d'une case
 
         /* La méthode fill remplie l'array avec des 0 */
         /* La méthode map applique à chaque élément la méthode en argument */
@@ -98,13 +99,12 @@ class Quadrillage extends Component{
         pinceau.fillStyle = '#000000';
 
         /* On dessine ici la grille */
-        let ecart = 20;
-        for (let h = ecart; h < canvas.height; h += ecart) {
+        for (let h = this.tailleCase; h < canvas.height; h += this.tailleCase) {
             pinceau.moveTo(0, h);
             pinceau.lineTo(canvas.width, h);
             pinceau.stroke();
         }
-        for (let l = ecart; l < canvas.width; l += ecart) {
+        for (let l = this.tailleCase; l < canvas.width; l += this.tailleCase) {
             pinceau.moveTo(l, 0);
             pinceau.lineTo(l, canvas.height);
             pinceau.stroke();
@@ -115,8 +115,13 @@ class Quadrillage extends Component{
     dessinerRectangles = (pinceau) => {
         for (let i = 0;i<this.casesLargeur;i++){
             for (let j = 0;j<this.casesHauteur;j++){
+                pinceau.clearRect(i*this.tailleCase + 1, j*this.tailleCase + 1, pinceau.canvas.width / this.casesLargeur - 2, pinceau.canvas.height / this.casesHauteur - 2);
                 if (this.matrice[i][j] === 1){
-                    pinceau.fillRect(i*20, j*20, pinceau.canvas.width / this.casesLargeur, pinceau.canvas.height / this.casesHauteur);
+                    pinceau.fillStyle = '#000000';
+                    pinceau.fillRect(i*this.tailleCase + 1, j*this.tailleCase + 1, pinceau.canvas.width / this.casesLargeur - 2, pinceau.canvas.height / this.casesHauteur - 2);
+                } else if (this.matrice[i][j] === 0) {
+                    pinceau.fillStyle = '#FFFFFF';
+                    pinceau.fillRect(i * this.tailleCase + 1, j * this.tailleCase + 1, pinceau.canvas.width / this.casesLargeur - 2, pinceau.canvas.height / this.casesHauteur - 2);
                 }
             }
         }
@@ -141,7 +146,16 @@ class Quadrillage extends Component{
             let canvasPosition = canvas.getBoundingClientRect();
             let inputX = input.pageX - (canvasPosition.left + window.scrollX);
             let inputY = input.pageY - (canvasPosition.top + window.scrollY);
-            console.log(inputX, inputY);
+            let [i,j] = [Math.floor(inputX/this.tailleCase), Math.floor(inputY/this.tailleCase)];
+            if (this.matrice[i][j] === 0) {
+                pinceau.fillStyle = '#000000';
+                pinceau.fillRect(i * this.tailleCase + 1, j * this.tailleCase + 1, pinceau.canvas.width / this.casesLargeur - 2, pinceau.canvas.height / this.casesHauteur - 2);
+                this.matrice[i][j] = 1;
+            } else if (this.matrice[i][j] === 1) {
+                pinceau.fillStyle = '#FFFFFF';
+                pinceau.fillRect(i * this.tailleCase + 1, j * this.tailleCase + 1, pinceau.canvas.width / this.casesLargeur - 2, pinceau.canvas.height / this.casesHauteur - 2);
+                this.matrice[i][j] = 0;
+            }
         }, false);
 
         /* Variables pour la fonction render() */
@@ -152,17 +166,17 @@ class Quadrillage extends Component{
 
         /* Fonction qui va être appelée à chaque frmae avec un pas choisi */
         const render = () => {
-            animationFrameId = window.requestAnimationFrame(render);
 
+            animationFrameId = window.requestAnimationFrame(render);
             const now = Date.now();
             if (now - previous < delay ){
                 return;
             }
             previous = now;
 
-            this.initDessin(pinceau, canvas);
             this.dessinerRectangles(pinceau);
             this.evoluer();
+
         }
 
         render();
@@ -171,7 +185,7 @@ class Quadrillage extends Component{
     /* Cette fonction est celle qui va être appelée par le composant appelant  */
     render(){
         return(
-                <canvas ref={this.canvasRef} width={this.casesLargeur * 20} height={this.casesHauteur * 20} style={{border: '1px solid black'}}/>
+                <canvas ref={this.canvasRef} width={this.casesLargeur * this.tailleCase} height={this.casesHauteur * this.tailleCase} style={{border: '1px solid black'}}/>
         )
     }
 }
