@@ -20,28 +20,40 @@ class Quadrillage extends Component{
 
     compterVoisines = (i, j) => {
         let voisines = 0;
-        if (this.matrice[i-1][j-1] === 1){
+        if (i !== 0) {
+            if (j !== 0) {
+                if (this.matrice[i - 1][j - 1] === 1) {
+                    voisines++;
+                }
+            }
+            if (this.matrice[i - 1][j] === 1) {
+                voisines++;
+            }
+            if (j !== this.casesHauteur - 1) {
+                if (this.matrice[i - 1][j + 1] === 1) {
+                    voisines++;
+                }
+            }
+        }
+        if (i !== this.casesLargeur - 1) {
+            if (j !== this.casesHauteur - 1) {
+                if (this.matrice[i + 1][j + 1] === 1) {
+                    voisines++;
+                }
+            }
+            if (this.matrice[i + 1][j] === 1) {
+                voisines++;
+            }
+            if (j !==  0) {
+                if (this.matrice[i + 1][j - 1] === 1) {
+                    voisines++;
+                }
+            }
+        }
+        if (j !== this.casesHauteur - 1 && this.matrice[i][j + 1] === 1) {
             voisines++;
         }
-        if (this.matrice[i-1][j] === 1){
-            voisines++;
-        }
-        if (this.matrice[i-1][j+1] === 1){
-            voisines++;
-        }
-        if (this.matrice[i][j+1] === 1){
-            voisines++;
-        }
-        if (this.matrice[i+1][j+1] === 1){
-            voisines++;
-        }
-        if (this.matrice[i+1][j] === 1){
-            voisines++;
-        }
-        if (this.matrice[i+1][j-1] === 1){
-            voisines++;
-        }
-        if (this.matrice[i][j-1] === 1){
+        if (j !== 0 && this.matrice[i][j-1] === 1){
             voisines++;
         }
         return voisines;
@@ -50,8 +62,8 @@ class Quadrillage extends Component{
     evoluer = () => {
         let voisines;
         let  mat = Array(this.casesLargeur).fill(0).map(() => new Array(this.casesHauteur).fill(0));
-        for (let i = 1;i<19;i++) {
-            for (let j = 1; j < 19; j++) {
+        for (let i = 0; i < this.casesLargeur; i++) {
+            for (let j = 0; j < this.casesHauteur; j++) {
                 voisines = this.compterVoisines(i,j);
                 if (this.matrice[i][j] === 1) {
                     if (voisines === 3 || voisines === 2) {
