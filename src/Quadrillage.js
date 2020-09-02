@@ -1,4 +1,4 @@
-import React, {useRef, useEffect, Component} from 'react'
+import React, {Component} from 'react'
 
 
 /* Ordre d'appel des fonctions :
@@ -10,12 +10,12 @@ class Quadrillage extends Component{
     constructor(props) {
         super(props);
         this.canvasRef = new React.createRef();
-        this.width = 400;
-        this.height = 400;
+        this.casesLargeur = 30;    // nombre de cases en largeur
+        this.casesHauteur = 30;   // nombre de cases en hauteur
 
         /* La méthode fill remplie l'array avec des 0 */
         /* La méthode map applique à chaque élément la méthode en argument */
-        this.matrice = Array(20).fill(0).map(() => new Array(20).fill(0));
+        this.matrice = Array(this.casesLargeur).fill(0).map(() => new Array(this.casesHauteur).fill(0));
     }
 
     compterVoisines = (i, j) => {
@@ -44,13 +44,12 @@ class Quadrillage extends Component{
         if (this.matrice[i][j-1] === 1){
             voisines++;
         }
-        //console.log(voisines, i, j);
         return voisines;
     }
 
     evoluer = () => {
         let voisines;
-        let  mat = Array(20).fill(0).map(() => new Array(20).fill(0));
+        let  mat = Array(this.casesLargeur).fill(0).map(() => new Array(this.casesHauteur).fill(0));
         for (let i = 1;i<19;i++) {
             for (let j = 1; j < 19; j++) {
                 voisines = this.compterVoisines(i,j);
@@ -97,25 +96,14 @@ class Quadrillage extends Component{
             pinceau.lineTo(l, canvas.height);
             pinceau.stroke();
         }
-
-        /* On dessine ici le patern proposé dans initPattern */
-        /*
-        for (let i = 0;i<20;i++){
-            for (let j = 0;j<20;j++){
-                if (this.matrice[i][j] === 1){
-                    pinceau.fillRect(i*20, j*20, pinceau.canvas.width / 20, pinceau.canvas.height / 20);
-                }
-            }
-        }
-        */
     }
 
     /* Fonction qui dessine en noir les cases "vivantes" */
     dessinerRectangles = (pinceau) => {
-        for (let i = 0;i<20;i++){
-            for (let j = 0;j<20;j++){
+        for (let i = 0;i<this.casesLargeur;i++){
+            for (let j = 0;j<this.casesHauteur;j++){
                 if (this.matrice[i][j] === 1){
-                    pinceau.fillRect(i*20, j*20, pinceau.canvas.width / 20, pinceau.canvas.height / 20);
+                    pinceau.fillRect(i*20, j*20, pinceau.canvas.width / this.casesLargeur, pinceau.canvas.height / this.casesHauteur);
                 }
             }
         }
@@ -131,12 +119,13 @@ class Quadrillage extends Component{
         this.initPattern();
         this.initDessin(pinceau, canvas);
 
+        /* Variables pour la fonction render() */
         let animationFrameId;
-
         const FPS = 2;
         const delay = 1000/FPS;
         let previous = 0;
 
+        /* Fonction qui va être appelée à chaque frmae avec un pas choisi */
         const render = () => {
             animationFrameId = window.requestAnimationFrame(render);
 
@@ -149,9 +138,6 @@ class Quadrillage extends Component{
             this.initDessin(pinceau, canvas);
             this.dessinerRectangles(pinceau);
             this.evoluer();
-            this.initDessin(pinceau, canvas);
-            this.dessinerRectangles(pinceau);
-
         }
 
         render();
@@ -161,24 +147,10 @@ class Quadrillage extends Component{
     render(){
         return(
             <div style={{marginTop: '10rem'}}>
-                <canvas ref={this.canvasRef} width={this.width} height={this.height} style={{border: '1px solid black'}}/>
+                <canvas ref={this.canvasRef} width={this.casesLargeur * 20} height={this.casesHauteur * 20} style={{border: '1px solid black'}}/>
             </div>
         )
     }
 }
-/*const Quadrillage = props => {
-
-    const canvasRef = useRef(null)
-
-    useEffect(() => {
-        const canvas = canvasRef.current
-        const context = canvas.getContext('2d')
-        //Our first draw
-        context.fillStyle = '#000000'
-        context.fillRect(0, 0, context.canvas.width, context.canvas.height)
-    }, [])
-
-    return <canvas ref={canvasRef} {...props}/>
-} */
 
 export default Quadrillage
