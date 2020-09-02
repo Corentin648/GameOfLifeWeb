@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 
 
 /* Ordre d'appel des fonctions :
@@ -20,6 +19,7 @@ class Quadrillage extends Component{
         this.matrice = Array(this.casesLargeur).fill(0).map(() => new Array(this.casesHauteur).fill(0));
     }
 
+    /* Fonction qui permet de compter les voisines d'une case de la matrice */
     compterVoisines = (i, j) => {
         let voisines = 0;
         if (i !== 0) {
@@ -61,6 +61,7 @@ class Quadrillage extends Component{
         return voisines;
     }
 
+    /* Fonction qui fait évoluer la matrice en fonction de la règle choisie */
     evoluer = () => {
         let voisines;
         let  mat = Array(this.casesLargeur).fill(0).map(() => new Array(this.casesHauteur).fill(0));
@@ -82,9 +83,7 @@ class Quadrillage extends Component{
         this.matrice = mat;
     }
 
-
-
-
+    /* Fonction qui initialise la matrice avec le pattern voulu */
     initPattern = () => {
         this.matrice[10][10] = 1;
         this.matrice[11][10] = 1;
@@ -111,7 +110,7 @@ class Quadrillage extends Component{
         }
     }
 
-    /* Fonction qui dessine en noir les cases "vivantes" */
+    /* Fonction qui dessine en noir les cases "vivantes" et en blanc les cases "mortes" */
     dessinerRectangles = (pinceau) => {
         for (let i = 0;i<this.casesLargeur;i++){
             for (let j = 0;j<this.casesHauteur;j++){
@@ -131,15 +130,15 @@ class Quadrillage extends Component{
     /* Cette fonction est appelée une fois que tous les éléments du DOM ont été mis en place */
     componentDidMount() {
 
-        //ReactDOM.findDOMNode(this).addEventListener('click', this.handleClickCanvas);
-
         /* On récupère la référence puis le contexte effectif du canvas */
         const canvas = this.canvasRef.current;
         const pinceau = canvas.getContext("2d");
+
+        /* On initialise la matrice et on trace la grille */
         this.initPattern();
         this.initDessin(pinceau, canvas);
 
-        /* On ajoute le listener à grille pour cliquer sur les cases */
+        /* On ajoute le listener à la grille pour cliquer sur les cases */
         canvas.addEventListener('click', (event) => {
             event.stopPropagation();
             let input = event;
@@ -164,7 +163,7 @@ class Quadrillage extends Component{
         const delay = 1000/FPS;
         let previous = 0;
 
-        /* Fonction qui va être appelée à chaque frmae avec un pas choisi */
+        /* Fonction qui va être appelée à chaque frame avec le pas de temps choisi */
         const render = () => {
 
             animationFrameId = window.requestAnimationFrame(render);
@@ -180,6 +179,10 @@ class Quadrillage extends Component{
         }
 
         render();
+
+        return () => {
+            window.cancelAnimationFrame(animationFrameId)
+        }
     }
 
     /* Cette fonction est celle qui va être appelée par le composant appelant  */
