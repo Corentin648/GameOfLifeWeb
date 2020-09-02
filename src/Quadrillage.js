@@ -1,4 +1,5 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
 
 
 /* Ordre d'appel des fonctions :
@@ -16,6 +17,18 @@ class Quadrillage extends Component{
         /* La méthode fill remplie l'array avec des 0 */
         /* La méthode map applique à chaque élément la méthode en argument */
         this.matrice = Array(this.casesLargeur).fill(0).map(() => new Array(this.casesHauteur).fill(0));
+
+        this.handleClickCanvas = this.handleClickCanvas.bind(this);
+    }
+
+    handleClickCanvas = (event, canvas) => {
+        event.stopPropagation();
+        //console.log("ça marche");
+        let input = event;
+        let canvasPosition = canvas.getBoundingClientRect();
+        let inputX = input.pageX - canvasPosition.left;
+        let inputY = input.pageY - canvasPosition.top;
+        console.log(inputX, inputY);
     }
 
     compterVoisines = (i, j) => {
@@ -125,11 +138,25 @@ class Quadrillage extends Component{
     /* Cette fonction est appelée une fois que tous les éléments du DOM ont été mis en place */
     componentDidMount() {
 
+        //ReactDOM.findDOMNode(this).addEventListener('click', this.handleClickCanvas);
+
         /* On récupère la référence puis le contexte effectif du canvas */
         const canvas = this.canvasRef.current;
         const pinceau = canvas.getContext("2d");
         this.initPattern();
         this.initDessin(pinceau, canvas);
+
+        //canvas.addEventListener('click', this.handleClickCanvas, false);
+
+        canvas.addEventListener('click', (event) => {
+            event.stopPropagation();
+            //console.log("ça marche");
+            let input = event;
+            let canvasPosition = canvas.getBoundingClientRect();
+            let inputX = input.pageX - canvasPosition.left;
+            let inputY = input.pageY - canvasPosition.top;
+            console.log(inputX, inputY);
+        }, false);
 
         /* Variables pour la fonction render() */
         let animationFrameId;
@@ -158,9 +185,7 @@ class Quadrillage extends Component{
     /* Cette fonction est celle qui va être appelée par le composant appelant  */
     render(){
         return(
-            <div style={{marginTop: '10rem'}}>
                 <canvas ref={this.canvasRef} width={this.casesLargeur * 20} height={this.casesHauteur * 20} style={{border: '1px solid black'}}/>
-            </div>
         )
     }
 }
