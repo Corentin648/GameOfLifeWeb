@@ -10,16 +10,17 @@ class Quadrillage extends Component{
 
     constructor(props) {
         super(props);
-        this.canvasRef = new React.createRef();
-        this.casesLargeur = 30;    // nombre de cases en largeur
-        this.casesHauteur = 30;   // nombre de cases en hauteur
-        this.tailleCase = 20;   // taille d'une case
+        this.state = {
+            canvasRef : new React.createRef(),
+            casesLargeur : 30,    // nombre de cases en largeur
+            casesHauteur : 30,   // nombre de cases en hauteur
+            tailleCase : 20,   // taille d'une case
+            start : false   // la partie n'est pas lancée au départ
+        }
 
         /* La méthode fill remplie l'array avec des 0 */
         /* La méthode map applique à chaque élément la méthode en argument */
-        this.matrice = Array(this.casesLargeur).fill(0).map(() => new Array(this.casesHauteur).fill(0));
-
-        this.start = false;
+        this.matrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
     }
 
     /* Fonction qui permet de compter les voisines d'une case de la matrice */
@@ -34,14 +35,14 @@ class Quadrillage extends Component{
             if (this.matrice[i - 1][j] === 1) {
                 voisines++;
             }
-            if (j !== this.casesHauteur - 1) {
+            if (j !== this.state.casesHauteur - 1) {
                 if (this.matrice[i - 1][j + 1] === 1) {
                     voisines++;
                 }
             }
         }
-        if (i !== this.casesLargeur - 1) {
-            if (j !== this.casesHauteur - 1) {
+        if (i !== this.state.casesLargeur - 1) {
+            if (j !== this.state.casesHauteur - 1) {
                 if (this.matrice[i + 1][j + 1] === 1) {
                     voisines++;
                 }
@@ -55,7 +56,7 @@ class Quadrillage extends Component{
                 }
             }
         }
-        if (j !== this.casesHauteur - 1 && this.matrice[i][j + 1] === 1) {
+        if (j !== this.state.casesHauteur - 1 && this.matrice[i][j + 1] === 1) {
             voisines++;
         }
         if (j !== 0 && this.matrice[i][j-1] === 1){
@@ -67,9 +68,9 @@ class Quadrillage extends Component{
     /* Fonction qui fait évoluer la matrice en fonction de la règle choisie */
     evoluer = () => {
         let voisines;
-        let  mat = Array(this.casesLargeur).fill(0).map(() => new Array(this.casesHauteur).fill(0));
-        for (let i = 0; i < this.casesLargeur; i++) {
-            for (let j = 0; j < this.casesHauteur; j++) {
+        let  mat = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
+        for (let i = 0; i < this.state.casesLargeur; i++) {
+            for (let j = 0; j < this.state.casesHauteur; j++) {
                 voisines = this.compterVoisines(i,j);
                 if (this.matrice[i][j] === 1) {
                     if (voisines === 3 || voisines === 2) {
@@ -101,33 +102,33 @@ class Quadrillage extends Component{
         pinceau.fillStyle = '#000000';
 
         /* On dessine ici la grille */
-        for (let h = this.tailleCase; h < canvas.height; h += this.tailleCase) {
+        for (let h = this.state.tailleCase; h < canvas.height; h += this.state.tailleCase) {
             pinceau.moveTo(0, h);
             pinceau.lineTo(canvas.width, h);
             pinceau.stroke();
         }
-        for (let l = this.tailleCase; l < canvas.width; l += this.tailleCase) {
+        for (let l = this.state.tailleCase; l < canvas.width; l += this.state.tailleCase) {
             pinceau.moveTo(l, 0);
             pinceau.lineTo(l, canvas.height);
             pinceau.stroke();
         }
-        pinceau.lineTo(canvas.width - this.tailleCase, canvas.height);
-        pinceau.lineTo(canvas.width - this.tailleCase, 0);
-        pinceau.lineTo(canvas.width - this.tailleCase, canvas.height);
+        pinceau.lineTo(canvas.width - this.state.tailleCase, canvas.height);
+        pinceau.lineTo(canvas.width - this.state.tailleCase, 0);
+        pinceau.lineTo(canvas.width - this.state.tailleCase, canvas.height);
         pinceau.stroke();
     }
 
     /* Fonction qui dessine en noir les cases "vivantes" et en blanc les cases "mortes" */
     dessinerRectangles = (pinceau) => {
-        for (let i = 0;i<this.casesLargeur;i++){
-            for (let j = 0;j<this.casesHauteur;j++){
-                pinceau.clearRect(i*this.tailleCase + 1, j*this.tailleCase + 1, pinceau.canvas.width / this.casesLargeur - 2, pinceau.canvas.height / this.casesHauteur - 2);
+        for (let i = 0;i<this.state.casesLargeur;i++){
+            for (let j = 0;j<this.state.casesHauteur;j++){
+                pinceau.clearRect(i*this.state.tailleCase + 1, j*this.state.tailleCase + 1, pinceau.canvas.width / this.state.casesLargeur - 2, pinceau.canvas.height / this.state.casesHauteur - 2);
                 if (this.matrice[i][j] === 1){
                     pinceau.fillStyle = '#000000';
-                    pinceau.fillRect(i*this.tailleCase + 1, j*this.tailleCase + 1, pinceau.canvas.width / this.casesLargeur - 2, pinceau.canvas.height / this.casesHauteur - 2);
+                    pinceau.fillRect(i*this.state.tailleCase + 1, j*this.state.tailleCase + 1, pinceau.canvas.width / this.state.casesLargeur - 2, pinceau.canvas.height / this.state.casesHauteur - 2);
                 } else if (this.matrice[i][j] === 0) {
                     pinceau.fillStyle = '#FFFFFF';
-                    pinceau.fillRect(i * this.tailleCase + 1, j * this.tailleCase + 1, pinceau.canvas.width / this.casesLargeur - 2, pinceau.canvas.height / this.casesHauteur - 2);
+                    pinceau.fillRect(i * this.state.tailleCase + 1, j * this.state.tailleCase + 1, pinceau.canvas.width / this.state.casesLargeur - 2, pinceau.canvas.height / this.state.casesHauteur - 2);
                 }
             }
         }
@@ -138,7 +139,7 @@ class Quadrillage extends Component{
     componentDidMount() {
 
         /* On récupère la référence puis le contexte effectif du canvas */
-        const canvas = this.canvasRef.current;
+        const canvas = this.state.canvasRef.current;
         const pinceau = canvas.getContext("2d");
 
         /* On initialise la matrice et on trace la grille */
@@ -152,14 +153,14 @@ class Quadrillage extends Component{
             let canvasPosition = canvas.getBoundingClientRect();
             let inputX = input.pageX - (canvasPosition.left + window.scrollX);
             let inputY = input.pageY - (canvasPosition.top + window.scrollY);
-            let [i,j] = [Math.floor(inputX/this.tailleCase), Math.floor(inputY/this.tailleCase)];
+            let [i,j] = [Math.floor(inputX/this.state.tailleCase), Math.floor(inputY/this.state.tailleCase)];
             if (this.matrice[i][j] === 0) {
                 pinceau.fillStyle = '#000000';
-                pinceau.fillRect(i * this.tailleCase + 1, j * this.tailleCase + 1, pinceau.canvas.width / this.casesLargeur - 2, pinceau.canvas.height / this.casesHauteur - 2);
+                pinceau.fillRect(i * this.state.tailleCase + 1, j * this.state.tailleCase + 1, pinceau.canvas.width / this.state.casesLargeur - 2, pinceau.canvas.height / this.state.casesHauteur - 2);
                 this.matrice[i][j] = 1;
             } else if (this.matrice[i][j] === 1) {
                 pinceau.fillStyle = '#FFFFFF';
-                pinceau.fillRect(i * this.tailleCase + 1, j * this.tailleCase + 1, pinceau.canvas.width / this.casesLargeur - 2, pinceau.canvas.height / this.casesHauteur - 2);
+                pinceau.fillRect(i * this.state.tailleCase + 1, j * this.state.tailleCase + 1, pinceau.canvas.width / this.state.casesLargeur - 2, pinceau.canvas.height / this.state.casesHauteur - 2);
                 this.matrice[i][j] = 0;
             }
         }, false);
@@ -174,7 +175,7 @@ class Quadrillage extends Component{
         /* Fonction qui va être appelée à chaque frame avec le pas de temps choisi */
         const render = () => {
 
-            if (this.start) {
+            if (this.state.start) {
                 animationFrameId = window.requestAnimationFrame(render);
                 const now = Date.now();
                 if (now - previous < delay) {
@@ -206,7 +207,15 @@ class Quadrillage extends Component{
     }
 
     handlerBoutonStart = () => {
-        this.start = !this.start;
+        this.setState({
+            start: !this.state.start
+        })
+    }
+
+    handlerChampLargeur = (event) => {
+        this.setState({
+            casesLargeur: event.target.value
+        })
     }
 
     /* Cette fonction est celle qui va être appelée par le composant appelant  */
@@ -214,7 +223,11 @@ class Quadrillage extends Component{
         return(
             <div style={{marginTop: '5rem'}}>
                 <button style={{display: "block"}} onClick={() => this.handlerBoutonStart()}><Image src={require("./logo192.png")} width={"32px"} height={"32px"}/></button>
-                <canvas ref={this.canvasRef} width={this.casesLargeur * this.tailleCase} height={this.casesHauteur * this.tailleCase} style={{border: '1px solid black'}}/>
+                <label>
+                    Nombre de cases en largeur :
+                    <input type="text" value={this.state.value} onChange={this.handleChange} />
+                </label>
+                <canvas ref={this.state.canvasRef} width={this.state.casesLargeur * this.state.tailleCase} height={this.state.casesHauteur * this.state.tailleCase} style={{border: '1px solid black'}}/>
             </div>
         )
     }
