@@ -17,12 +17,16 @@ class Quadrillage extends Component{
             changerCasesLargeur : '',   // nouveau nombre de cases en largeur
             changerCasesHauteur : '',   // nouveau nombre de cases en hauteur
             tailleCase : 20,   // taille d'une case
-            start : false   // la partie n'est pas lancée au départ
+            start : false,   // la partie n'est pas lancée au départ
+            tailleChangee: false // indique si la taille de la grille vient d'être changée
         }
 
         /* La méthode fill remplie l'array avec des 0 */
         /* La méthode map applique à chaque élément la méthode en argument */
         this.matrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
+
+        this.canvas ='';
+        this.pinceau='';
     }
 
     /* Fonction qui permet de compter les voisines d'une case de la matrice */
@@ -102,7 +106,6 @@ class Quadrillage extends Component{
     initDessin = (pinceau, canvas) => {
         pinceau.clearRect(0, 0, canvas.width, canvas.height);
         pinceau.fillStyle = '#000000';
-
         /* On dessine ici la grille */
         for (let h = this.state.tailleCase; h < canvas.height; h += this.state.tailleCase) {
             pinceau.moveTo(0, h);
@@ -124,6 +127,7 @@ class Quadrillage extends Component{
     dessinerRectangles = (pinceau) => {
         for (let i = 0;i<this.state.casesLargeur;i++){
             for (let j = 0;j<this.state.casesHauteur;j++){
+                console.log(i,j);
                 pinceau.clearRect(i*this.state.tailleCase + 1, j*this.state.tailleCase + 1, pinceau.canvas.width / this.state.casesLargeur - 2, pinceau.canvas.height / this.state.casesHauteur - 2);
                 if (this.matrice[i][j] === 1){
                     pinceau.fillStyle = '#000000';
@@ -140,29 +144,31 @@ class Quadrillage extends Component{
     /* Cette fonction est appelée une fois que tous les éléments du DOM ont été mis en place */
     componentDidMount() {
 
+        console.log('tesssssssssssst');
+
         /* On récupère la référence puis le contexte effectif du canvas */
-        const canvas = this.state.canvasRef.current;
-        const pinceau = canvas.getContext("2d");
+        this.canvas = this.state.canvasRef.current;
+        this.pinceau = this.canvas.getContext("2d");
 
         /* On initialise la matrice et on trace la grille */
         this.initPattern();
-        this.initDessin(pinceau, canvas);
+        this.initDessin(this.pinceau, this.canvas);
 
         /* On ajoute le listener à la grille pour cliquer sur les cases */
-        canvas.addEventListener('click', (event) => {
+        this.canvas.addEventListener('click', (event) => {
             event.stopPropagation();
             let input = event;
-            let canvasPosition = canvas.getBoundingClientRect();
+            let canvasPosition = this.canvas.getBoundingClientRect();
             let inputX = input.pageX - (canvasPosition.left + window.scrollX);
             let inputY = input.pageY - (canvasPosition.top + window.scrollY);
             let [i,j] = [Math.floor(inputX/this.state.tailleCase), Math.floor(inputY/this.state.tailleCase)];
             if (this.matrice[i][j] === 0) {
-                pinceau.fillStyle = '#000000';
-                pinceau.fillRect(i * this.state.tailleCase + 1, j * this.state.tailleCase + 1, pinceau.canvas.width / this.state.casesLargeur - 2, pinceau.canvas.height / this.state.casesHauteur - 2);
+                this.pinceau.fillStyle = '#000000';
+                this.pinceau.fillRect(i * this.state.tailleCase + 1, j * this.state.tailleCase + 1, this.pinceau.canvas.width / this.state.casesLargeur - 2, this.pinceau.canvas.height / this.state.casesHauteur - 2);
                 this.matrice[i][j] = 1;
             } else if (this.matrice[i][j] === 1) {
-                pinceau.fillStyle = '#FFFFFF';
-                pinceau.fillRect(i * this.state.tailleCase + 1, j * this.state.tailleCase + 1, pinceau.canvas.width / this.state.casesLargeur - 2, pinceau.canvas.height / this.state.casesHauteur - 2);
+                this.pinceau.fillStyle = '#FFFFFF';
+                this.pinceau.fillRect(i * this.state.tailleCase + 1, j * this.state.tailleCase + 1, this.pinceau.canvas.width / this.state.casesLargeur - 2, this.pinceau.canvas.height / this.state.casesHauteur - 2);
                 this.matrice[i][j] = 0;
             }
         }, false);
@@ -177,6 +183,15 @@ class Quadrillage extends Component{
         /* Fonction qui va être appelée à chaque frame avec le pas de temps choisi */
         const render = () => {
 
+            if (this.state.tailleChangee){
+                this.initDessin(this.pinceau, this.canvas);
+                const mat = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
+                this.matrice = mat;
+                console.log(this.matrice);
+                this.setState({
+                    tailleChangee: false
+                })
+            }
             if (this.state.start) {
                 animationFrameId = window.requestAnimationFrame(render);
                 const now = Date.now();
@@ -186,7 +201,7 @@ class Quadrillage extends Component{
                 previous = now;
                 compt++;
 
-                this.dessinerRectangles(pinceau);
+                this.dessinerRectangles(this.pinceau);
                 this.evoluer();
             } else {
                 animationFrameId = window.requestAnimationFrame(render);
@@ -214,11 +229,15 @@ class Quadrillage extends Component{
         })
     }
 
-    handlerChangerTailleEcran = () => {
+    handlerChangerTailleEcran = (event) => {
         this.setState({
             casesLargeur: this.state.changerCasesLargeur,
             casesHauteur: this.state.changerCasesHauteur
         })
+        this.setState({
+            tailleChangee: true
+        })
+        event.preventDefault();
     }
 
     handlerChampLargeur = (event) => {
@@ -238,7 +257,7 @@ class Quadrillage extends Component{
         return(
             <div style={{marginTop: '5rem'}}>
                 <button style={{display: "block"}} onClick={() => this.handlerBoutonStart()}><Image src={require("./logo192.png")} width={"32px"} height={"32px"}/></button>
-                <form onSubmit={() => this.handlerChangerTailleEcran()}>
+                <form onSubmit={(event) => {this.handlerChangerTailleEcran(event); return false}}>
                     <label>
                         Nombre de cases en largeur :
                         <input type="text" value={this.state.changerCasesLargeur} onChange={this.handlerChampLargeur} />
