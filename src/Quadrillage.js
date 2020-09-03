@@ -144,8 +144,6 @@ class Quadrillage extends Component{
     /* Cette fonction est appelée une fois que tous les éléments du DOM ont été mis en place */
     componentDidMount() {
 
-        console.log('tesssssssssssst');
-
         /* On récupère la référence puis le contexte effectif du canvas */
         this.canvas = this.state.canvasRef.current;
         this.pinceau = this.canvas.getContext("2d");
@@ -185,9 +183,7 @@ class Quadrillage extends Component{
 
             if (this.state.tailleChangee){
                 this.initDessin(this.pinceau, this.canvas);
-                const mat = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
-                this.matrice = mat;
-                console.log(this.matrice);
+                this.matrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
                 this.setState({
                     tailleChangee: false
                 })
@@ -231,8 +227,8 @@ class Quadrillage extends Component{
 
     handlerChangerTailleEcran = (event) => {
         this.setState({
-            casesLargeur: this.state.changerCasesLargeur,
-            casesHauteur: this.state.changerCasesHauteur
+            casesLargeur: parseInt(this.state.changerCasesLargeur),
+            casesHauteur: parseInt(this.state.changerCasesHauteur)
         })
         this.setState({
             tailleChangee: true
