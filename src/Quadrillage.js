@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Image} from "react-bootstrap";
 
 
 /* Ordre d'appel des fonctions :
@@ -17,6 +18,8 @@ class Quadrillage extends Component{
         /* La méthode fill remplie l'array avec des 0 */
         /* La méthode map applique à chaque élément la méthode en argument */
         this.matrice = Array(this.casesLargeur).fill(0).map(() => new Array(this.casesHauteur).fill(0));
+
+        this.start = false;
     }
 
     /* Fonction qui permet de compter les voisines d'une case de la matrice */
@@ -88,8 +91,8 @@ class Quadrillage extends Component{
         this.matrice[10][10] = 1;
         this.matrice[11][10] = 1;
         this.matrice[12][10] = 1;
-        this.matrice[13][10] = 1;
-        this.matrice[14][10] = 1;
+        this.matrice[12][9] = 1;
+        this.matrice[11][8] = 1;
     }
 
     /* Fonction qui trace le quadrillage */
@@ -108,6 +111,10 @@ class Quadrillage extends Component{
             pinceau.lineTo(l, canvas.height);
             pinceau.stroke();
         }
+        pinceau.lineTo(canvas.width - this.tailleCase, canvas.height);
+        pinceau.lineTo(canvas.width - this.tailleCase, 0);
+        pinceau.lineTo(canvas.width - this.tailleCase, canvas.height);
+        pinceau.stroke();
     }
 
     /* Fonction qui dessine en noir les cases "vivantes" et en blanc les cases "mortes" */
@@ -159,22 +166,35 @@ class Quadrillage extends Component{
 
         /* Variables pour la fonction render() */
         let animationFrameId;
-        const FPS = 2;
+        const FPS = 10;
         const delay = 1000/FPS;
         let previous = 0;
+        let compt = 0;
 
         /* Fonction qui va être appelée à chaque frame avec le pas de temps choisi */
         const render = () => {
 
-            animationFrameId = window.requestAnimationFrame(render);
-            const now = Date.now();
-            if (now - previous < delay ){
-                return;
-            }
-            previous = now;
+            if (this.start) {
+                animationFrameId = window.requestAnimationFrame(render);
+                const now = Date.now();
+                if (now - previous < delay) {
+                    return;
+                }
+                previous = now;
+                compt++;
 
-            this.dessinerRectangles(pinceau);
-            this.evoluer();
+                this.dessinerRectangles(pinceau);
+                this.evoluer();
+            } else {
+                animationFrameId = window.requestAnimationFrame(render);
+                const now = Date.now();
+                if (now - previous < delay) {
+                    return;
+                }
+                previous = now;
+                compt++;
+            }
+
 
         }
 
@@ -185,10 +205,17 @@ class Quadrillage extends Component{
         }
     }
 
+    handlerBoutonStart = () => {
+        this.start = !this.start;
+    }
+
     /* Cette fonction est celle qui va être appelée par le composant appelant  */
     render(){
         return(
+            <div style={{marginTop: '5rem'}}>
+                <button style={{display: "block"}} onClick={() => this.handlerBoutonStart()}><Image src={require("./logo192.png")} width={"32px"} height={"32px"}/></button>
                 <canvas ref={this.canvasRef} width={this.casesLargeur * this.tailleCase} height={this.casesHauteur * this.tailleCase} style={{border: '1px solid black'}}/>
+            </div>
         )
     }
 }
