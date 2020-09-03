@@ -14,6 +14,8 @@ class Quadrillage extends Component{
             canvasRef : new React.createRef(),
             casesLargeur : 30,    // nombre de cases en largeur
             casesHauteur : 30,   // nombre de cases en hauteur
+            changerCasesLargeur : '',   // nouveau nombre de cases en largeur
+            changerCasesHauteur : '',   // nouveau nombre de cases en hauteur
             tailleCase : 20,   // taille d'une case
             start : false   // la partie n'est pas lancée au départ
         }
@@ -212,9 +214,22 @@ class Quadrillage extends Component{
         })
     }
 
+    handlerChangerTailleEcran = () => {
+        this.setState({
+            casesLargeur: this.state.changerCasesLargeur,
+            casesHauteur: this.state.changerCasesHauteur
+        })
+    }
+
     handlerChampLargeur = (event) => {
         this.setState({
-            casesLargeur: event.target.value
+            changerCasesLargeur: event.target.value
+        })
+    }
+
+    handlerChampHauteur = (event) => {
+        this.setState({
+            changerCasesHauteur: event.target.value
         })
     }
 
@@ -223,10 +238,17 @@ class Quadrillage extends Component{
         return(
             <div style={{marginTop: '5rem'}}>
                 <button style={{display: "block"}} onClick={() => this.handlerBoutonStart()}><Image src={require("./logo192.png")} width={"32px"} height={"32px"}/></button>
-                <label>
-                    Nombre de cases en largeur :
-                    <input type="text" value={this.state.value} onChange={this.handleChange} />
-                </label>
+                <form onSubmit={() => this.handlerChangerTailleEcran()}>
+                    <label>
+                        Nombre de cases en largeur :
+                        <input type="text" value={this.state.changerCasesLargeur} onChange={this.handlerChampLargeur} />
+                    </label>
+                    <label>
+                        Nombre de cases en hauteur :
+                        <input type="text" value={this.state.changerCasesHauteur} onChange={this.handlerChampHauteur} />
+                    </label>
+                    <input type="submit" value="Envoyer" />
+                </form>
                 <canvas ref={this.state.canvasRef} width={this.state.casesLargeur * this.state.tailleCase} height={this.state.casesHauteur * this.state.tailleCase} style={{border: '1px solid black'}}/>
             </div>
         )
