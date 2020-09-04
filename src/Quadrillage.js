@@ -234,6 +234,7 @@ class Quadrillage extends Component{
         }
     }
 
+    // TODO : à terme il faudra pouvoir step back autant de fois que l'on veut
     handlerBoutonStepBack = () => {
         if (!this.state.start){
             this.matrice = this.backupMatrice;
@@ -242,14 +243,20 @@ class Quadrillage extends Component{
     }
 
     handlerChangerTailleEcran = (event) => {
-        this.setState({
-            // TODO : ici il faut try et en cas d'erreur afficher un message
-            casesLargeur: parseInt(this.state.changerCasesLargeur),
-            casesHauteur: parseInt(this.state.changerCasesHauteur)
-        })
-        this.setState({
-            tailleChangee: true
-        })
+        const nouvelleLargeur = parseInt(this.state.changerCasesLargeur);
+        const nouvelleHauteur = parseInt(this.state.changerCasesHauteur);
+        if (!isNaN(nouvelleLargeur) && !isNaN(nouvelleHauteur)) {
+            this.setState({
+                // TODO : ici il faut try et en cas d'erreur afficher un message
+                casesLargeur: parseInt(this.state.changerCasesLargeur),
+                casesHauteur: parseInt(this.state.changerCasesHauteur)
+            })
+            this.setState({
+                tailleChangee: true
+            })
+        } else {
+            alert('Il faut entrer des nombres entiers !');
+            }
         event.preventDefault();
     }
 
