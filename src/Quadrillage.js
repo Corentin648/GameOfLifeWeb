@@ -24,6 +24,7 @@ class Quadrillage extends Component{
         /* La méthode fill remplie l'array avec des 0 */
         /* La méthode map applique à chaque élément la méthode en argument */
         this.matrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
+        this.backupMatrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
 
         this.canvas ='';
         this.pinceau='';
@@ -73,6 +74,7 @@ class Quadrillage extends Component{
 
     /* Fonction qui fait évoluer la matrice en fonction de la règle choisie */
     evoluer = () => {
+        this.backupMatrice = this.matrice;
         let voisines;
         let  mat = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
         for (let i = 0; i < this.state.casesLargeur; i++) {
@@ -225,8 +227,23 @@ class Quadrillage extends Component{
         })
     }
 
+    handlerBoutonOneStep = () => {
+        if (!this.state.start){
+            this.evoluer();
+            this.dessinerRectangles(this.pinceau);
+        }
+    }
+
+    handlerBoutonStepBack = () => {
+        if (!this.state.start){
+            this.matrice = this.backupMatrice;
+            this.dessinerRectangles(this.pinceau);
+        }
+    }
+
     handlerChangerTailleEcran = (event) => {
         this.setState({
+            // TODO : ici il faut try et en cas d'erreur afficher un message
             casesLargeur: parseInt(this.state.changerCasesLargeur),
             casesHauteur: parseInt(this.state.changerCasesHauteur)
         })
@@ -253,6 +270,8 @@ class Quadrillage extends Component{
         return(
             <div style={{marginTop: '5rem'}}>
                 <button style={{display: "block"}} onClick={() => this.handlerBoutonStart()}><Image src={require("./logo192.png")} width={"32px"} height={"32px"}/></button>
+                <button style={{display: "block"}} onClick={() => this.handlerBoutonOneStep()}>One Step</button>
+                <button style={{display: "block"}} onClick={() => this.handlerBoutonStepBack()}>Step Back</button>
                 <form onSubmit={(event) => {this.handlerChangerTailleEcran(event); return false}}>
                     <label>
                         Nombre de cases en largeur :
