@@ -222,6 +222,12 @@ class Quadrillage extends Component{
     }
 
     handlerBoutonStart = () => {
+        let image = document.getElementById("imagePlayButton");
+        if (this.state.start){
+            image.setAttribute("src", require('./images/play_button.svg'));
+        } else {
+            image.setAttribute("src", require('./images/pause_button.svg'));
+        }
         this.setState({
             start: !this.state.start
         })
@@ -247,7 +253,6 @@ class Quadrillage extends Component{
         const nouvelleHauteur = parseInt(this.state.changerCasesHauteur);
         if (!isNaN(nouvelleLargeur) && !isNaN(nouvelleHauteur)) {
             this.setState({
-                // TODO : ici il faut try et en cas d'erreur afficher un message
                 casesLargeur: parseInt(this.state.changerCasesLargeur),
                 casesHauteur: parseInt(this.state.changerCasesHauteur)
             })
@@ -276,7 +281,7 @@ class Quadrillage extends Component{
     render(){
         return(
             <div style={{marginTop: '5rem'}}>
-                <button style={{display: "block"}} onClick={() => this.handlerBoutonStart()}><Image src={require("./logo192.png")} width={"32px"} height={"32px"}/></button>
+                <button style={{display: "block"}} onClick={() => this.handlerBoutonStart()}><Image id={"imagePlayButton"} src={require("./images/play_button.svg")} width={"32px"} height={"32px"}/></button>
                 <button style={{display: "block"}} onClick={() => this.handlerBoutonOneStep()}>One Step</button>
                 <button style={{display: "block"}} onClick={() => this.handlerBoutonStepBack()}>Step Back</button>
                 <form onSubmit={(event) => {this.handlerChangerTailleEcran(event); return false}}>
