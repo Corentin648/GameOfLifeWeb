@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Image} from "react-bootstrap";
+import {Button, Image} from "react-bootstrap";
+import Form from 'react-bootstrap/Form';
 
 
 /* Ordre d'appel des fonctions :
@@ -190,7 +191,6 @@ class Quadrillage extends Component{
         const FPS = 10;
         const delay = 1000/FPS;
         let previous = 0;
-        let compt = 0;
 
         /* Fonction qui va être appelée à chaque frame avec le pas de temps choisi */
         const render = () => {
@@ -210,7 +210,6 @@ class Quadrillage extends Component{
                     return;
                 }
                 previous = now;
-                compt++;
 
                 this.dessinerRectangles(this.pinceau);
                 this.evoluer();
@@ -221,7 +220,6 @@ class Quadrillage extends Component{
                     return;
                 }
                 previous = now;
-                compt++;
             }
         }
 
@@ -242,7 +240,6 @@ class Quadrillage extends Component{
         this.setState({
             start: !this.state.start
         })
-        //this.saveStateToLocalStorage();
     }
 
     handlerBoutonOneStep = () => {
@@ -267,8 +264,6 @@ class Quadrillage extends Component{
             this.setState({
                 casesLargeur: parseInt(this.state.changerCasesLargeur),
                 casesHauteur: parseInt(this.state.changerCasesHauteur),
-                changerCasesLargeur: '',
-                changerCasesHauteur: ''
             })
             this.setState({
                 tailleChangee: true
@@ -295,22 +290,26 @@ class Quadrillage extends Component{
     /* Cette fonction est celle qui va être appelée par le composant appelant  */
     render(){
         return(
-            <div style={{marginTop: '5rem'}}>
-                <button style={{display: "block"}} onClick={() => this.handlerBoutonStart()}><Image id={"imagePlayButton"} src={require("./images/play_button.svg")} width={"32px"} height={"32px"}/></button>
-                <button style={{display: "block"}} onClick={() => this.handlerBoutonOneStep()}>One Step</button>
-                <button style={{display: "block"}} onClick={() => this.handlerBoutonStepBack()}>Step Back</button>
-                <form onSubmit={(event) => {this.handlerChangerTailleEcran(event); return false}}>
-                    <label>
-                        Nombre de cases en largeur :
-                        <input type="text" value={this.state.changerCasesLargeur} onChange={this.handlerChampLargeur} />
-                    </label>
-                    <label>
-                        Nombre de cases en hauteur :
-                        <input type="text" value={this.state.changerCasesHauteur} onChange={this.handlerChampHauteur} />
-                    </label>
-                    <input type="submit" value="Envoyer" />
-                </form>
-                <canvas ref={this.canvasRef} width={this.state.casesLargeur * this.state.tailleCase} height={this.state.casesHauteur * this.state.tailleCase} style={{border: '1px solid black'}}/>
+            <div>
+                <Form onSubmit={(event) => {this.handlerChangerTailleEcran(event); return false}}>
+                    <Form.Group controlId={"formChangerLargeur"}>
+                        <Form.Label>Nombre de cases en largeur</Form.Label>
+                        <Form.Control type="text" value={this.state.changerCasesLargeur} onChange={this.handlerChampLargeur} />
+                    </Form.Group>
+                    <Form.Group controlId={"formChangerHauteur"}>
+                        <Form.Label>Nombre de cases en hauteur</Form.Label>
+                        <Form.Control type="text" value={this.state.changerCasesHauteur} onChange={this.handlerChampHauteur} />
+                    </Form.Group>
+                    <Button type="submit" variant="primary">Envoyer</Button>
+                </Form>
+
+                <div style={{display: "block"}}>
+                    <button onClick={() => this.handlerBoutonStart()}><Image id={"imagePlayButton"} src={require("./images/play_button.svg")} width={"32px"} height={"32px"}/></button>
+                    <button onClick={() => this.handlerBoutonOneStep()}>One Step</button>
+                    <button onClick={() => this.handlerBoutonStepBack()}>Step Back</button>
+                </div>
+
+                <canvas style={{display:" inline", marginTop: '5rem'}} ref={this.canvasRef} width={this.state.casesLargeur * this.state.tailleCase} height={this.state.casesHauteur * this.state.tailleCase} style={{border: '1px solid black'}}/>
             </div>
         )
     }
