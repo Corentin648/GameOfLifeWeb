@@ -20,13 +20,19 @@ class Quadrillage extends Component{
             tailleChangee: false // indique si la taille de la grille vient d'être changée
         }
 
+        //localStorage.clear();
+        const state = localStorage.getItem('state');
+        if (state) {
+            this.state = JSON.parse(state);
+        }
+
         this.canvasRef = new React.createRef();
 
         /* La méthode fill remplie l'array avec des 0 */
         /* La méthode map applique à chaque élément la méthode en argument */
 
-        this.matrice = '';
-        this.backupMatrice ='';
+        this.matrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
+        this.backupMatrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
 
         this.canvas ='';
         this.pinceau='';
@@ -151,23 +157,14 @@ class Quadrillage extends Component{
     /* Cette fonction est appelée une fois que tous les éléments du DOM ont été mis en place */
     componentDidMount() {
 
-        //localStorage.clear();
-        const state = localStorage.getItem('state');
-        if (state) {
-            this.setState(JSON.parse(state));
-        }
-        //console.log(this.state);
-
-        this.matrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
-        this.backupMatrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
-
         /* On récupère la référence puis le contexte effectif du canvas */
         this.canvas = this.canvasRef.current;
         this.pinceau = this.canvas.getContext("2d");
 
         /* On initialise la matrice et on trace la grille */
-        this.initPattern();
+        //this.initPattern();
         this.initDessin(this.pinceau, this.canvas);
+        this.dessinerRectangles(this.pinceau);
 
         /* On ajoute le listener à la grille pour cliquer sur les cases */
         this.canvas.addEventListener('click', (event) => {
@@ -245,7 +242,7 @@ class Quadrillage extends Component{
         this.setState({
             start: !this.state.start
         })
-        this.saveStateToLocalStorage();
+        //this.saveStateToLocalStorage();
     }
 
     handlerBoutonOneStep = () => {
@@ -279,8 +276,7 @@ class Quadrillage extends Component{
         } else {
             alert('Il faut entrer des nombres entiers !');
             }
-        this.saveStateToLocalStorage();
-        console.log(this.state);
+        //this.saveStateToLocalStorage();
         event.preventDefault();
     }
 
