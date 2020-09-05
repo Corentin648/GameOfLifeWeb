@@ -11,7 +11,6 @@ class Quadrillage extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            canvasRef : new React.createRef(),
             casesLargeur : 30,    // nombre de cases en largeur
             casesHauteur : 30,   // nombre de cases en hauteur
             changerCasesLargeur : '',   // nouveau nombre de cases en largeur
@@ -21,13 +20,20 @@ class Quadrillage extends Component{
             tailleChangee: false // indique si la taille de la grille vient d'être changée
         }
 
+        this.canvasRef = new React.createRef();
+
         /* La méthode fill remplie l'array avec des 0 */
         /* La méthode map applique à chaque élément la méthode en argument */
-        this.matrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
-        this.backupMatrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
+
+        this.matrice = '';
+        this.backupMatrice ='';
 
         this.canvas ='';
         this.pinceau='';
+    }
+
+    saveStateToLocalStorage = () => {
+        localStorage.setItem('state', JSON.stringify(this.state));
     }
 
     /* Fonction qui permet de compter les voisines d'une case de la matrice */
@@ -129,7 +135,6 @@ class Quadrillage extends Component{
     dessinerRectangles = (pinceau) => {
         for (let i = 0;i<this.state.casesLargeur;i++){
             for (let j = 0;j<this.state.casesHauteur;j++){
-                console.log(i,j);
                 pinceau.clearRect(i*this.state.tailleCase + 1, j*this.state.tailleCase + 1, pinceau.canvas.width / this.state.casesLargeur - 2, pinceau.canvas.height / this.state.casesHauteur - 2);
                 if (this.matrice[i][j] === 1){
                     pinceau.fillStyle = '#000000';
@@ -146,8 +151,18 @@ class Quadrillage extends Component{
     /* Cette fonction est appelée une fois que tous les éléments du DOM ont été mis en place */
     componentDidMount() {
 
+        //localStorage.clear();
+        const state = localStorage.getItem('state');
+        if (state) {
+            this.setState(JSON.parse(state));
+        }
+        //console.log(this.state);
+
+        this.matrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
+        this.backupMatrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
+
         /* On récupère la référence puis le contexte effectif du canvas */
-        this.canvas = this.state.canvasRef.current;
+        this.canvas = this.canvasRef.current;
         this.pinceau = this.canvas.getContext("2d");
 
         /* On initialise la matrice et on trace la grille */
@@ -189,6 +204,7 @@ class Quadrillage extends Component{
                 this.setState({
                     tailleChangee: false
                 })
+                this.saveStateToLocalStorage();
             }
             if (this.state.start) {
                 animationFrameId = window.requestAnimationFrame(render);
@@ -210,8 +226,6 @@ class Quadrillage extends Component{
                 previous = now;
                 compt++;
             }
-
-
         }
 
         render();
@@ -231,6 +245,7 @@ class Quadrillage extends Component{
         this.setState({
             start: !this.state.start
         })
+        this.saveStateToLocalStorage();
     }
 
     handlerBoutonOneStep = () => {
@@ -254,7 +269,9 @@ class Quadrillage extends Component{
         if (!isNaN(nouvelleLargeur) && !isNaN(nouvelleHauteur)) {
             this.setState({
                 casesLargeur: parseInt(this.state.changerCasesLargeur),
-                casesHauteur: parseInt(this.state.changerCasesHauteur)
+                casesHauteur: parseInt(this.state.changerCasesHauteur),
+                changerCasesLargeur: '',
+                changerCasesHauteur: ''
             })
             this.setState({
                 tailleChangee: true
@@ -262,6 +279,8 @@ class Quadrillage extends Component{
         } else {
             alert('Il faut entrer des nombres entiers !');
             }
+        this.saveStateToLocalStorage();
+        console.log(this.state);
         event.preventDefault();
     }
 
@@ -295,7 +314,7 @@ class Quadrillage extends Component{
                     </label>
                     <input type="submit" value="Envoyer" />
                 </form>
-                <canvas ref={this.state.canvasRef} width={this.state.casesLargeur * this.state.tailleCase} height={this.state.casesHauteur * this.state.tailleCase} style={{border: '1px solid black'}}/>
+                <canvas ref={this.canvasRef} width={this.state.casesLargeur * this.state.tailleCase} height={this.state.casesHauteur * this.state.tailleCase} style={{border: '1px solid black'}}/>
             </div>
         )
     }
