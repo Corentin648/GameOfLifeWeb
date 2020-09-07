@@ -260,6 +260,16 @@ class Quadrillage extends Component{
         }
     }
 
+    handlerBoutonRestart = () => {
+        if (this.state.start){
+            alert("Le jeu doit être en pause !");
+        } else {
+            this.matrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
+            this.backupMatrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
+            this.dessinerRectangles(this.pinceau);
+        }
+    }
+
     handlerBoutonAddSquares = () => {
         const bouton = document.getElementById("boutonAddSquares");
         if (this.state.addSquares){
@@ -309,8 +319,8 @@ class Quadrillage extends Component{
     render(){
         return(
             <div>
-                <div style={{border: "1px solid black", display: "flex", flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between"}}>
-                    <h1 style={{border: "1px solid black", marginRight: "5%", fontSize: "5vw"}}>Jeu de la Vie</h1>
+                <div style={{display: "flex", flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between"}}>
+                    <h1 style={{marginRight: "5%", fontSize: "5vw"}}>Jeu de la Vie</h1>
                     <div style={{border: "1px solid black", marginLeft: "5%", display: "flex", flexDirection: "column", width: "400px"}}>
                         <h3>Choix des différents paramètres</h3>
                         <Form onSubmit={(event) => {this.handlerChangerTailleEcran(event); return false}}>
@@ -332,6 +342,7 @@ class Quadrillage extends Component{
                     <button onClick={() => this.handlerBoutonStart()}><Image id={"imagePlayButton"} src={require("./images/play_button.svg")} width={"32px"} height={"32px"}/></button>
                     <button style={{marginLeft: "30px"}} onClick={() => this.handlerBoutonOneStep()}>One Step</button>
                     <button style={{marginLeft: "30px"}} onClick={() => this.handlerBoutonStepBack()}>Step Back</button>
+                    <button style={{marginLeft: "30px"}} onClick={() => this.handlerBoutonRestart()}>Restart</button>
                     <button id={"boutonAddSquares"} style={{marginLeft: "30px"}} onClick={() => this.handlerBoutonAddSquares()}>Add Squares (off)</button>
                 </div>
 
