@@ -18,7 +18,8 @@ class Quadrillage extends Component{
             changerCasesHauteur : '',   // nouveau nombre de cases en hauteur
             tailleCase : 20,   // taille d'une case
             start : false,   // la partie n'est pas lancée au départ
-            tailleChangee: false // indique si la taille de la grille vient d'être changée
+            tailleChangee: false, // indique si la taille de la grille vient d'être changée
+            addSquares: false   // indique si l'ajout de cases est activé
         }
 
         //localStorage.clear();
@@ -170,19 +171,21 @@ class Quadrillage extends Component{
         /* On ajoute le listener à la grille pour cliquer sur les cases */
         this.canvas.addEventListener('click', (event) => {
             event.stopPropagation();
-            let input = event;
-            let canvasPosition = this.canvas.getBoundingClientRect();
-            let inputX = input.pageX - (canvasPosition.left + window.scrollX);
-            let inputY = input.pageY - (canvasPosition.top + window.scrollY);
-            let [i,j] = [Math.floor(inputX/this.state.tailleCase), Math.floor(inputY/this.state.tailleCase)];
-            if (this.matrice[i][j] === 0) {
-                this.pinceau.fillStyle = '#000000';
-                this.pinceau.fillRect(i * this.state.tailleCase + 1, j * this.state.tailleCase + 1, this.pinceau.canvas.width / this.state.casesLargeur - 2, this.pinceau.canvas.height / this.state.casesHauteur - 2);
-                this.matrice[i][j] = 1;
-            } else if (this.matrice[i][j] === 1) {
-                this.pinceau.fillStyle = '#FFFFFF';
-                this.pinceau.fillRect(i * this.state.tailleCase + 1, j * this.state.tailleCase + 1, this.pinceau.canvas.width / this.state.casesLargeur - 2, this.pinceau.canvas.height / this.state.casesHauteur - 2);
-                this.matrice[i][j] = 0;
+            if (this.state.addSquares) {
+                let input = event;
+                let canvasPosition = this.canvas.getBoundingClientRect();
+                let inputX = input.pageX - (canvasPosition.left + window.scrollX);
+                let inputY = input.pageY - (canvasPosition.top + window.scrollY);
+                let [i, j] = [Math.floor(inputX / this.state.tailleCase), Math.floor(inputY / this.state.tailleCase)];
+                if (this.matrice[i][j] === 0) {
+                    this.pinceau.fillStyle = '#000000';
+                    this.pinceau.fillRect(i * this.state.tailleCase + 1, j * this.state.tailleCase + 1, this.pinceau.canvas.width / this.state.casesLargeur - 2, this.pinceau.canvas.height / this.state.casesHauteur - 2);
+                    this.matrice[i][j] = 1;
+                } else if (this.matrice[i][j] === 1) {
+                    this.pinceau.fillStyle = '#FFFFFF';
+                    this.pinceau.fillRect(i * this.state.tailleCase + 1, j * this.state.tailleCase + 1, this.pinceau.canvas.width / this.state.casesLargeur - 2, this.pinceau.canvas.height / this.state.casesHauteur - 2);
+                    this.matrice[i][j] = 0;
+                }
             }
         }, false);
 
@@ -257,6 +260,21 @@ class Quadrillage extends Component{
         }
     }
 
+    handlerBoutonAddSquares = () => {
+        const bouton = document.getElementById("boutonAddSquares");
+        if (this.state.addSquares){
+            this.setState({
+                addSquares: false
+            })
+            bouton.textContent = "Add Squares (off)";
+        } else {
+            this.setState({
+                addSquares: true
+            })
+            bouton.textContent = "Add Squares (on)";
+        }
+    }
+
     handlerChangerTailleEcran = (event) => {
         const nouvelleLargeur = parseInt(this.state.changerCasesLargeur);
         const nouvelleHauteur = parseInt(this.state.changerCasesHauteur);
@@ -291,19 +309,22 @@ class Quadrillage extends Component{
     render(){
         return(
             <div>
-                <div style={{border: "1px solid black", marginLeft: "30px", display: "flex", flexDirection: "column", width: "400px"}}>
-                <h3>Choix des différents paramètres</h3>
-                <Form onSubmit={(event) => {this.handlerChangerTailleEcran(event); return false}}>
-                    <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center"}}controlId={"formChangerLargeur"}>
-                        <Form.Label style={{paddingRight: "10px"}}>Nombre de cases en largeur :</Form.Label>
-                        <input style={{width:"50px"}} type="text" value={this.state.changerCasesLargeur} onChange={this.handlerChampLargeur} />
-                    </Form.Group>
-                    <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center", paddingTop: "20px"}} controlId={"formChangerHauteur"}>
-                        <Form.Label style={{paddingRight: "10px"}}>Nombre de cases en hauteur :</Form.Label>
-                        <input style={{width:"50px"}} type="text" value={this.state.changerCasesHauteur} onChange={this.handlerChampHauteur} />
-                    </Form.Group>
-                    <Button style={{marginTop: "20px"}} type="submit" variant="primary">Mettre à jour</Button>
-                </Form>
+                <div style={{border: "1px solid black", display: "flex", flexDirection: "row-reverse"}}>
+                    <h1>Jeu de la Vie</h1>
+                    <div style={{border: "1px solid black", marginLeft: "30px", display: "flex", flexDirection: "column", width: "400px"}}>
+                        <h3>Choix des différents paramètres</h3>
+                        <Form onSubmit={(event) => {this.handlerChangerTailleEcran(event); return false}}>
+                            <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center"}}controlId={"formChangerLargeur"}>
+                                <Form.Label style={{paddingRight: "10px"}}>Nombre de cases en largeur :</Form.Label>
+                                <input style={{width:"50px"}} type="text" value={this.state.changerCasesLargeur} onChange={this.handlerChampLargeur} />
+                            </Form.Group>
+                            <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center", paddingTop: "20px"}} controlId={"formChangerHauteur"}>
+                                <Form.Label style={{paddingRight: "10px"}}>Nombre de cases en hauteur :</Form.Label>
+                                <input style={{width:"50px"}} type="text" value={this.state.changerCasesHauteur} onChange={this.handlerChampHauteur} />
+                            </Form.Group>
+                            <Button style={{marginTop: "20px"}} type="submit" variant="primary">Mettre à jour</Button>
+                        </Form>
+                    </div>
                 </div>
 
                 <h3>Actions sur la grille</h3>
@@ -311,6 +332,7 @@ class Quadrillage extends Component{
                     <button onClick={() => this.handlerBoutonStart()}><Image id={"imagePlayButton"} src={require("./images/play_button.svg")} width={"32px"} height={"32px"}/></button>
                     <button style={{marginLeft: "30px"}} onClick={() => this.handlerBoutonOneStep()}>One Step</button>
                     <button style={{marginLeft: "30px"}} onClick={() => this.handlerBoutonStepBack()}>Step Back</button>
+                    <button id={"boutonAddSquares"} style={{marginLeft: "30px"}} onClick={() => this.handlerBoutonAddSquares()}>Add Squares (off)</button>
                 </div>
 
                 <canvas style={{display:" inline", marginTop: '30px', border: "1px solid black"}} ref={this.canvasRef} width={this.state.casesLargeur * this.state.tailleCase} height={this.state.casesHauteur * this.state.tailleCase} />
