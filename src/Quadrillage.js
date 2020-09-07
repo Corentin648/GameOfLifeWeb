@@ -291,17 +291,20 @@ class Quadrillage extends Component{
     render(){
         return(
             <div>
+                <div style={{border: "1px solid black", marginLeft: "30px", display: "flex", flexDirection: "column", width: "20%"}}>
+                <h3 style={{textAlign: "left"}}>Choix des différents paramètres :</h3>
                 <Form onSubmit={(event) => {this.handlerChangerTailleEcran(event); return false}}>
-                    <Form.Group controlId={"formChangerLargeur"}>
-                        <Form.Label>Nombre de cases en largeur</Form.Label>
-                        <Form.Control type="text" value={this.state.changerCasesLargeur} onChange={this.handlerChampLargeur} />
+                    <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center"}}controlId={"formChangerLargeur"}>
+                        <Form.Label style={{paddingRight: "10px"}}>Nombre de cases en largeur :</Form.Label>
+                        <input style={{width:"50px"}} type="text" value={this.state.changerCasesLargeur} onChange={this.handlerChampLargeur} />
                     </Form.Group>
-                    <Form.Group controlId={"formChangerHauteur"}>
-                        <Form.Label>Nombre de cases en hauteur</Form.Label>
-                        <Form.Control type="text" value={this.state.changerCasesHauteur} onChange={this.handlerChampHauteur} />
+                    <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center", paddingTop: "20px"}} controlId={"formChangerHauteur"}>
+                        <Form.Label style={{paddingRight: "10px"}}>Nombre de cases en hauteur :</Form.Label>
+                        <input style={{width:"50px"}} type="text" value={this.state.changerCasesHauteur} onChange={this.handlerChampHauteur} />
                     </Form.Group>
-                    <Button type="submit" variant="primary">Envoyer</Button>
+                    <Button style={{marginTop: "20px"}} type="submit" variant="primary">Envoyer</Button>
                 </Form>
+                </div>
 
                 <div style={{display: "block"}}>
                     <button onClick={() => this.handlerBoutonStart()}><Image id={"imagePlayButton"} src={require("./images/play_button.svg")} width={"32px"} height={"32px"}/></button>
