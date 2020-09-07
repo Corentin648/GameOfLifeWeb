@@ -309,9 +309,9 @@ class Quadrillage extends Component{
     render(){
         return(
             <div>
-                <div style={{border: "1px solid black", display: "flex", flexDirection: "row-reverse"}}>
-                    <h1>Jeu de la Vie</h1>
-                    <div style={{border: "1px solid black", marginLeft: "30px", display: "flex", flexDirection: "column", width: "400px"}}>
+                <div style={{border: "1px solid black", display: "flex", flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between"}}>
+                    <h1 style={{border: "1px solid black", marginRight: "5%", fontSize: "5vw"}}>Jeu de la Vie</h1>
+                    <div style={{border: "1px solid black", marginLeft: "5%", display: "flex", flexDirection: "column", width: "400px"}}>
                         <h3>Choix des différents paramètres</h3>
                         <Form onSubmit={(event) => {this.handlerChangerTailleEcran(event); return false}}>
                             <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center"}}controlId={"formChangerLargeur"}>
