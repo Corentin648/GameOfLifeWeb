@@ -291,8 +291,8 @@ class Quadrillage extends Component{
     render(){
         return(
             <div>
-                <div style={{border: "1px solid black", marginLeft: "30px", display: "flex", flexDirection: "column", width: "20%"}}>
-                <h3 style={{textAlign: "left"}}>Choix des différents paramètres :</h3>
+                <div style={{border: "1px solid black", marginLeft: "30px", display: "flex", flexDirection: "column", width: "400px"}}>
+                <h3>Choix des différents paramètres</h3>
                 <Form onSubmit={(event) => {this.handlerChangerTailleEcran(event); return false}}>
                     <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center"}}controlId={"formChangerLargeur"}>
                         <Form.Label style={{paddingRight: "10px"}}>Nombre de cases en largeur :</Form.Label>
@@ -302,17 +302,18 @@ class Quadrillage extends Component{
                         <Form.Label style={{paddingRight: "10px"}}>Nombre de cases en hauteur :</Form.Label>
                         <input style={{width:"50px"}} type="text" value={this.state.changerCasesHauteur} onChange={this.handlerChampHauteur} />
                     </Form.Group>
-                    <Button style={{marginTop: "20px"}} type="submit" variant="primary">Envoyer</Button>
+                    <Button style={{marginTop: "20px"}} type="submit" variant="primary">Mettre à jour</Button>
                 </Form>
                 </div>
 
-                <div style={{display: "block"}}>
+                <h3>Actions sur la grille</h3>
+                <div style={{display: "flex", justifyContent: "center"}}>
                     <button onClick={() => this.handlerBoutonStart()}><Image id={"imagePlayButton"} src={require("./images/play_button.svg")} width={"32px"} height={"32px"}/></button>
-                    <button onClick={() => this.handlerBoutonOneStep()}>One Step</button>
-                    <button onClick={() => this.handlerBoutonStepBack()}>Step Back</button>
+                    <button style={{marginLeft: "30px"}} onClick={() => this.handlerBoutonOneStep()}>One Step</button>
+                    <button style={{marginLeft: "30px"}} onClick={() => this.handlerBoutonStepBack()}>Step Back</button>
                 </div>
 
-                <canvas style={{display:" inline", marginTop: '5rem'}} ref={this.canvasRef} width={this.state.casesLargeur * this.state.tailleCase} height={this.state.casesHauteur * this.state.tailleCase} style={{border: '1px solid black'}}/>
+                <canvas style={{display:" inline", marginTop: '30px', border: "1px solid black"}} ref={this.canvasRef} width={this.state.casesLargeur * this.state.tailleCase} height={this.state.casesHauteur * this.state.tailleCase} />
             </div>
         )
     }
