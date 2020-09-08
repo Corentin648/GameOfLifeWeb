@@ -26,7 +26,10 @@ class Quadrillage extends Component{
             tailleChangee: false, // indique si la taille de la grille vient d'être changée
 
             start : false,   // la partie n'est pas lancée au départ
-            addSquares: false   // indique si l'ajout de cases est activé
+            addSquares: false,   // indique si l'ajout de cases est activé
+
+            voisinsResterEnVie: [2,3],  // liste des nombres de voisins pour rester en vie
+            voisinsNaitre: [3]  // liste des nombres de voisins pour naître
         }
 
         //localStorage.clear();
@@ -98,14 +101,21 @@ class Quadrillage extends Component{
     evoluer = () => {
         this.backupMatrice = this.matrice;
         let voisines;
+        let resterEnVie;
         let  mat = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
         for (let i = 0; i < this.state.casesLargeur; i++) {
             for (let j = 0; j < this.state.casesHauteur; j++) {
                 voisines = this.compterVoisines(i,j);
+                resterEnVie = false;
+                // TODO : on fera un forEach et mettra le résultat dans un booléen
                 if (this.matrice[i][j] === 1) {
-                    if (voisines === 3 || voisines === 2) {
+                    this.state.voisinsResterEnVie.forEach((i) => {
+                        if (voisines === this.state.voisinsResterEnVie[i]) {resterEnVie = true}
+                    })
+                    /*if (voisines === 3 || voisines === 2) {
                         mat[i][j] = 1;
-                    }
+                    }*/
+                    if (resterEnVie) {this.matrice[i][j] = 1}
                 }
                 else if (this.matrice[i][j] === 0) {
                     if (voisines === 3) {
@@ -166,6 +176,12 @@ class Quadrillage extends Component{
 
     /* Cette fonction est appelée une fois que tous les éléments du DOM ont été mis en place */
     componentDidMount() {
+
+        this.setState({
+            changerCasesLargeur: this.state.casesLargeur,
+            changerCasesHauteur: this.state.casesHauteur,
+            changerTailleCase: this.state.tailleCase
+        })
 
         /* On récupère la référence puis le contexte effectif du canvas */
         this.canvas = this.canvasRef.current;
@@ -307,6 +323,7 @@ class Quadrillage extends Component{
         })
     }
 
+    // TODO : il faut ajouter un bouton pour restaurer les valeurs par défaut
     handlerChangerTailleEcran = (event) => {
         const nouvelleLargeur = parseInt(this.state.changerCasesLargeur);
         const nouvelleHauteur = parseInt(this.state.changerCasesHauteur);
