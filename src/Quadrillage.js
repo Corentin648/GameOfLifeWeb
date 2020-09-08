@@ -16,6 +16,7 @@ class Quadrillage extends Component{
             casesHauteur : 30,   // nombre de cases en hauteur
             changerCasesLargeur : '',   // nouveau nombre de cases en largeur
             changerCasesHauteur : '',   // nouveau nombre de cases en hauteur
+            changerTailleCases : '',    // nouvelle taille de case
             tailleCase : 20,   // taille d'une case
             start : false,   // la partie n'est pas lancée au départ
             tailleChangee: false, // indique si la taille de la grille vient d'être changée
@@ -288,10 +289,12 @@ class Quadrillage extends Component{
     handlerChangerTailleEcran = (event) => {
         const nouvelleLargeur = parseInt(this.state.changerCasesLargeur);
         const nouvelleHauteur = parseInt(this.state.changerCasesHauteur);
-        if (!isNaN(nouvelleLargeur) && !isNaN(nouvelleHauteur)) {
+        const nouvelleTailleCase = parseInt(this.state.changerTailleCase);
+        if (!isNaN(nouvelleLargeur) && !isNaN(nouvelleHauteur) && !isNaN(nouvelleTailleCase)) {
             this.setState({
-                casesLargeur: parseInt(this.state.changerCasesLargeur),
-                casesHauteur: parseInt(this.state.changerCasesHauteur),
+                casesLargeur: nouvelleLargeur,
+                casesHauteur: nouvelleHauteur,
+                tailleCase: nouvelleTailleCase
             })
             this.setState({
                 tailleChangee: true
@@ -315,6 +318,13 @@ class Quadrillage extends Component{
         })
     }
 
+    handlerChampTailleCase = (event) => {
+        this.setState({
+            changerTailleCase: event.target.value
+        })
+    }
+
+
     /* Cette fonction est celle qui va être appelée par le composant appelant  */
     render(){
         return(
@@ -331,6 +341,10 @@ class Quadrillage extends Component{
                             <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center", paddingTop: "20px"}} controlId={"formChangerHauteur"}>
                                 <Form.Label style={{paddingRight: "10px"}}>Nombre de cases en hauteur :</Form.Label>
                                 <input style={{width:"50px"}} type="text" value={this.state.changerCasesHauteur} onChange={this.handlerChampHauteur} />
+                            </Form.Group>
+                            <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center", paddingTop: "20px"}} controlId={"formChangerTailleCase"}>
+                                <Form.Label style={{paddingRight: "10px"}}>Taille d'une case :</Form.Label>
+                                <input style={{width:"50px"}} type="text" value={this.state.changerTailleCase} onChange={this.handlerChampTailleCase} />
                             </Form.Group>
                             <Button style={{marginTop: "20px"}} type="submit" variant="primary">Mettre à jour</Button>
                         </Form>
