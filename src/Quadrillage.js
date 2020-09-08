@@ -382,6 +382,7 @@ class Quadrillage extends Component{
                 <canvas style={{display:" inline", marginTop: '30px', border: "1px solid black"}} ref={this.canvasRef} width={this.state.casesLargeur * this.state.tailleCase} height={this.state.casesHauteur * this.state.tailleCase} />
 
                 <Modal className={"modal"} show={this.state.showModal} onHide={() => this.handlerFermerModal()} backdrop="static">
+                    <div className={"modal-content"}>
                     <Modal.Header closeButton>
                         <Modal.Title>Changer les règles du jeu</Modal.Title>
                     </Modal.Header>
@@ -394,6 +395,7 @@ class Quadrillage extends Component{
                             Save Changes
                         </Button>
                     </Modal.Footer>
+                    </div>
                 </Modal>
 
                 {/* <div id="myModal" className="modal">
