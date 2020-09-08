@@ -349,7 +349,7 @@ class Quadrillage extends Component{
             <div>
                 <div style={{display: "flex", flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between"}}>
                     <h1 style={{marginRight: "5%", fontSize: "5vw"}}>Jeu de la Vie</h1>
-                    <div style={{border: "1px solid black", marginLeft: "5%", display: "flex", flexDirection: "column", width: "400px"}}>
+                    <div style={{border: "1px solid black", marginLeft: "5%", display: "flex", flexDirection: "column", width: "400px", padding: "20px"}}>
                         <h3>Choix des différents paramètres</h3>
                         <button style={{width: "200px", marginBottom: "20px"}} onClick={() => this.handlerChangerRegles()}>Changer les règles</button>
                         <Form onSubmit={(event) => {this.handlerChangerTailleEcran(event); return false}}>
@@ -381,31 +381,29 @@ class Quadrillage extends Component{
 
                 <canvas style={{display:" inline", marginTop: '30px', border: "1px solid black"}} ref={this.canvasRef} width={this.state.casesLargeur * this.state.tailleCase} height={this.state.casesHauteur * this.state.tailleCase} />
 
-                <Modal className={"modal"} show={this.state.showModal} onHide={() => this.handlerFermerModal()} backdrop="static">
-                    <div className={"modal-content"}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Changer les règles du jeu</Modal.Title>
+                <Modal animation={true} className={"modal"} show={this.state.showModal} onHide={() => this.handlerFermerModal()} backdrop={"static"}>
+                    <Modal.Header style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                        <Modal.Title><h2>Changer les règles du jeu</h2></Modal.Title>
+                        <button style={{height: "30px"}} className={"close"} onClick={() => this.handlerFermerModal()}>&times;</button>
                     </Modal.Header>
-                    <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+                    <Modal.Body>
+                        <Form>
+                            <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center"}}controlId={"formChangerLargeur"}>
+                                <Form.Label style={{paddingRight: "10px"}}>Nombre de voisins pour rester en vie :</Form.Label>
+                                <input style={{width:"50px"}} type="text" value={this.state.changerCasesLargeur} onChange={this.handlerChampLargeur} />
+                            </Form.Group>
+                            <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center", paddingTop: "20px"}} controlId={"formChangerHauteur"}>
+                                <Form.Label style={{paddingRight: "10px"}}>Nombre de voisins pour naître :</Form.Label>
+                                <input style={{width:"50px"}} type="text" value={this.state.changerCasesHauteur} onChange={this.handlerChampHauteur} />
+                            </Form.Group>
+                        </Form>
+                    </Modal.Body>
+                    <div style={{marginTop: "20px"}}>
                     <Modal.Footer>
-                        <Button variant="secondary">
-                            Close
-                        </Button>
-                        <Button variant="primary">
-                            Save Changes
-                        </Button>
+                        <Button variant="primary">Save Changes</Button>
                     </Modal.Footer>
                     </div>
                 </Modal>
-
-                {/* <div id="myModal" className="modal">
-
-                    <div className="modal-content">
-                        <span className="close">&times;</span>
-                        <p>Some text in the Modal..</p>
-                    </div>
-
-                </div> */}
 
             </div>
         )
