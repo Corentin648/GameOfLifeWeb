@@ -1,7 +1,8 @@
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import {Button, Image} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
-
+import Modal from "react-bootstrap/Modal";
+import "./Quadrillage.css";
 
 /* Ordre d'appel des fonctions :
 Appel du composant par le parent --> état initial par le constructor --> appel de render() --> le composant est mis en place --> appel de componentDidMount() --> mise à jour du composant --> appel de render()
@@ -12,14 +13,19 @@ class Quadrillage extends Component{
     constructor(props) {
         super(props);
         this.state = {
+            showModal: false,   // afficher le modal pour changer les règles
+
             casesLargeur : 30,    // nombre de cases en largeur
             casesHauteur : 30,   // nombre de cases en hauteur
+            tailleCase : 20,   // taille d'une case
+
             changerCasesLargeur : '',   // nouveau nombre de cases en largeur
             changerCasesHauteur : '',   // nouveau nombre de cases en hauteur
             changerTailleCases : '',    // nouvelle taille de case
-            tailleCase : 20,   // taille d'une case
-            start : false,   // la partie n'est pas lancée au départ
+
             tailleChangee: false, // indique si la taille de la grille vient d'être changée
+
+            start : false,   // la partie n'est pas lancée au départ
             addSquares: false   // indique si l'ajout de cases est activé
         }
 
@@ -286,6 +292,18 @@ class Quadrillage extends Component{
         }
     }
 
+    handlerChangerRegles = () => {
+        this.setState({
+            showModal: true
+        })
+    }
+
+    handlerFermerModal = () => {
+        this.setState({
+            showModal: false
+        })
+    }
+
     handlerChangerTailleEcran = (event) => {
         const nouvelleLargeur = parseInt(this.state.changerCasesLargeur);
         const nouvelleHauteur = parseInt(this.state.changerCasesHauteur);
@@ -333,6 +351,7 @@ class Quadrillage extends Component{
                     <h1 style={{marginRight: "5%", fontSize: "5vw"}}>Jeu de la Vie</h1>
                     <div style={{border: "1px solid black", marginLeft: "5%", display: "flex", flexDirection: "column", width: "400px"}}>
                         <h3>Choix des différents paramètres</h3>
+                        <button style={{width: "200px", marginBottom: "20px"}} onClick={() => this.handlerChangerRegles()}>Changer les règles</button>
                         <Form onSubmit={(event) => {this.handlerChangerTailleEcran(event); return false}}>
                             <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center"}}controlId={"formChangerLargeur"}>
                                 <Form.Label style={{paddingRight: "10px"}}>Nombre de cases en largeur :</Form.Label>
@@ -361,6 +380,31 @@ class Quadrillage extends Component{
                 </div>
 
                 <canvas style={{display:" inline", marginTop: '30px', border: "1px solid black"}} ref={this.canvasRef} width={this.state.casesLargeur * this.state.tailleCase} height={this.state.casesHauteur * this.state.tailleCase} />
+
+                <Modal className={"modal"} show={this.state.showModal} onHide={() => this.handlerFermerModal()} backdrop="static">
+                    <Modal.Header closeButton>
+                        <Modal.Title>Changer les règles du jeu</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary">
+                            Close
+                        </Button>
+                        <Button variant="primary">
+                            Save Changes
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                {/* <div id="myModal" className="modal">
+
+                    <div className="modal-content">
+                        <span className="close">&times;</span>
+                        <p>Some text in the Modal..</p>
+                    </div>
+
+                </div> */}
+
             </div>
         )
     }
