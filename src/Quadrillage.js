@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react';
+import React, {Component} from 'react';
 import {Button, Image} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Modal from "react-bootstrap/Modal";
@@ -47,6 +47,7 @@ class Quadrillage extends Component{
         this.pinceau='';
     }
 
+    /* Fonction qui permet de stocker le state dans la ressource du navigateur */
     saveStateToLocalStorage = () => {
         localStorage.setItem('state', JSON.stringify(this.state));
     }
@@ -213,6 +214,8 @@ class Quadrillage extends Component{
                 })
                 this.saveStateToLocalStorage();
             }
+
+            /* La partie n'avance que si le bouton Start est sur On */
             if (this.state.start) {
                 animationFrameId = window.requestAnimationFrame(render);
                 const now = Date.now();
@@ -347,6 +350,7 @@ class Quadrillage extends Component{
     render(){
         return(
             <div>
+                {/* Affichage du formulaire permettant de mettre à jour les paramètres du jeu */}
                 <div style={{display: "flex", flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between"}}>
                     <h1 style={{marginRight: "5%", fontSize: "5vw"}}>Jeu de la Vie</h1>
                     <div style={{border: "1px solid black", marginLeft: "5%", display: "flex", flexDirection: "column", width: "400px", padding: "20px"}}>
@@ -370,6 +374,7 @@ class Quadrillage extends Component{
                     </div>
                 </div>
 
+                {/* Affichage des boutons permettant d'agir sur la grille */}
                 <h3>Actions sur la grille</h3>
                 <div style={{display: "flex", justifyContent: "center"}}>
                     <button onClick={() => this.handlerBoutonStart()}><Image id={"imagePlayButton"} src={require("./images/play_button.svg")} width={"32px"} height={"32px"}/></button>
@@ -379,8 +384,10 @@ class Quadrillage extends Component{
                     <button id={"boutonAddSquares"} style={{marginLeft: "30px"}} onClick={() => this.handlerBoutonAddSquares()}>Add Squares (off)</button>
                 </div>
 
+                {/* Affichage de la grille */}
                 <canvas style={{display:" inline", marginTop: '30px', border: "1px solid black"}} ref={this.canvasRef} width={this.state.casesLargeur * this.state.tailleCase} height={this.state.casesHauteur * this.state.tailleCase} />
 
+                {/* Modal s'affichant lorsque l'on souhaite changer les règles du jeu*/}
                 <Modal animation={true} className={"modal"} show={this.state.showModal} onHide={() => this.handlerFermerModal()} backdrop={"static"}>
                     <Modal.Header style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                         <Modal.Title><h2>Changer les règles du jeu</h2></Modal.Title>
@@ -391,18 +398,16 @@ class Quadrillage extends Component{
                             <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center"}}controlId={"formChangerLargeur"}>
                                 <Form.Label style={{paddingRight: "10px"}}>Nombre de voisins pour rester en vie :</Form.Label>
                                 <input style={{width:"50px"}} type="text" value={this.state.changerCasesLargeur} onChange={this.handlerChampLargeur} />
+                                <Form.Label style={{paddingLeft: "10px", color: "rgb(120,120,120)"}}>Exemple: 3 ; 2</Form.Label>
                             </Form.Group>
                             <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center", paddingTop: "20px"}} controlId={"formChangerHauteur"}>
                                 <Form.Label style={{paddingRight: "10px"}}>Nombre de voisins pour naître :</Form.Label>
                                 <input style={{width:"50px"}} type="text" value={this.state.changerCasesHauteur} onChange={this.handlerChampHauteur} />
+                                <Form.Label style={{paddingLeft: "10px", color: "rgb(120,120,120)"}}>Exemple: 3 </Form.Label>
                             </Form.Group>
+                            <Button style={{marginTop: "20px"}} type="submit" variant="primary">Save Changes</Button>
                         </Form>
                     </Modal.Body>
-                    <div style={{marginTop: "20px"}}>
-                    <Modal.Footer>
-                        <Button variant="primary">Save Changes</Button>
-                    </Modal.Footer>
-                    </div>
                 </Modal>
 
             </div>
