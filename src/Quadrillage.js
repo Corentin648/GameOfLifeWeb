@@ -340,30 +340,31 @@ class Quadrillage extends Component{
     verifierChangementRegle = (entree) => {
         const nouveau = entree;
         let tabString = nouveau.split(';');
+        //console.log(tabString);
         let tabInt = [];
-        let changement = true;
         for (let valeur of tabString) {
-
+            const conversion = parseInt(valeur);
+            if (isNaN(conversion) || valeur !== conversion.toString()){
+                tabInt = [];
+                break;
+            } else {
+                if (!tabInt.includes(conversion)) {
+                    tabInt.push(conversion);
+                }
+            }
         }
+        return tabInt;
     }
 
     handlerChangerRegle = (event) => {
-        const nouveauResterEnVie = this.state.changerResterEnVie;
-        const nouveauNaitre = this.state.changerNaitre;
-        let tabResterEnVieString = nouveauResterEnVie.split(';');
-        let tabNaitreString = nouveauNaitre.split(';');
-        let tabResterEnVieInt = [];
-        let tabNaitreInt = [];
-        let changement = true;
-        for (let valeur of tabResterEnVieString){
-            const conversion  = parseInt(valeur);
-            if (isNaN(conversion)){
-                changement = false;
-            } else {
-                tabResterEnVieInt.push(conversion);
-            }
+        const tabIntResterEnVie =  this.verifierChangementRegle(this.state.changerResterEnVie);
+        const tabIntNaitre = this.verifierChangementRegle(this.state.changerNaitre);
+
+        if (tabIntNaitre.length !== 0 && tabIntResterEnVie.length !== 0){
+
+        } else {
+            alert("La syntaxe  n'est pas correcte ! voir l'exemple");
         }
-        console.log(tabResterEnVieInt);
         event.preventDefault();
     }
 
