@@ -28,8 +28,11 @@ class Quadrillage extends Component{
             start : false,   // la partie n'est pas lancée au départ
             addSquares: false,   // indique si l'ajout de cases est activé
 
-            voisinsResterEnVie: [2,3],  // liste des nombres de voisins pour rester en vie
-            voisinsNaitre: [3]  // liste des nombres de voisins pour naître
+            voisinsResterEnVie: [2, 3],  // lot de nombre voisins pour rester en vie
+            voisinsNaitre: [3],  // lot de nombre de voisins pour naître
+
+            changerResterEnVie : '',    // nouveau lot nombre de voisins pour rester en vie
+            changerNaitre : ''  // nouveau lot de nombre de voisins pour naître
         }
 
         //localStorage.clear();
@@ -102,25 +105,24 @@ class Quadrillage extends Component{
         this.backupMatrice = this.matrice;
         let voisines;
         let resterEnVie;
+        let naitre;
         let  mat = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
         for (let i = 0; i < this.state.casesLargeur; i++) {
             for (let j = 0; j < this.state.casesHauteur; j++) {
                 voisines = this.compterVoisines(i,j);
                 resterEnVie = false;
-                // TODO : on fera un forEach et mettra le résultat dans un booléen
+                naitre = false;
                 if (this.matrice[i][j] === 1) {
-                    this.state.voisinsResterEnVie.forEach((i) => {
-                        if (voisines === this.state.voisinsResterEnVie[i]) {resterEnVie = true}
-                    })
-                    /*if (voisines === 3 || voisines === 2) {
-                        mat[i][j] = 1;
-                    }*/
-                    if (resterEnVie) {this.matrice[i][j] = 1}
+                    for (let k in this.state.voisinsResterEnVie){
+                        if (voisines === this.state.voisinsResterEnVie[k]) {resterEnVie = true}
+                    }
+                    if (resterEnVie) {mat[i][j] = 1}
                 }
                 else if (this.matrice[i][j] === 0) {
-                    if (voisines === 3) {
-                        mat[i][j] = 1;
+                    for (let k in this.state.voisinsNaitre){
+                        if (voisines === this.state.voisinsNaitre[k]) {naitre = true}
                     }
+                    if (naitre) {mat[i][j] = 1}
                 }
             }
         }
@@ -311,7 +313,7 @@ class Quadrillage extends Component{
         }
     }
 
-    handlerChangerRegles = () => {
+    handlerBoutonChangerRegles = () => {
         this.setState({
             showModal: true
         })
@@ -321,6 +323,48 @@ class Quadrillage extends Component{
         this.setState({
             showModal: false
         })
+    }
+
+    handlerChangerResterEnVie = (event) => {
+        this.setState({
+            changerResterEnVie: event.target.value
+        })
+    }
+
+    handlerChangerNaitre = (event) => {
+        this.setState({
+            changerNaitre: event.target.value
+        })
+    }
+
+    verifierChangementRegle = (entree) => {
+        const nouveau = entree;
+        let tabString = nouveau.split(';');
+        let tabInt = [];
+        let changement = true;
+        for (let valeur of tabString) {
+
+        }
+    }
+
+    handlerChangerRegle = (event) => {
+        const nouveauResterEnVie = this.state.changerResterEnVie;
+        const nouveauNaitre = this.state.changerNaitre;
+        let tabResterEnVieString = nouveauResterEnVie.split(';');
+        let tabNaitreString = nouveauNaitre.split(';');
+        let tabResterEnVieInt = [];
+        let tabNaitreInt = [];
+        let changement = true;
+        for (let valeur of tabResterEnVieString){
+            const conversion  = parseInt(valeur);
+            if (isNaN(conversion)){
+                changement = false;
+            } else {
+                tabResterEnVieInt.push(conversion);
+            }
+        }
+        console.log(tabResterEnVieInt);
+        event.preventDefault();
     }
 
     // TODO : il faut ajouter un bouton pour restaurer les valeurs par défaut
@@ -372,7 +416,7 @@ class Quadrillage extends Component{
                     <h1 style={{marginRight: "5%", fontSize: "5vw"}}>Jeu de la Vie</h1>
                     <div style={{border: "1px solid black", marginLeft: "5%", display: "flex", flexDirection: "column", width: "400px", padding: "20px"}}>
                         <h3>Choix des différents paramètres</h3>
-                        <button style={{width: "200px", marginBottom: "20px"}} onClick={() => this.handlerChangerRegles()}>Changer les règles</button>
+                        <button style={{width: "200px", marginBottom: "20px"}} onClick={() => this.handlerBoutonChangerRegles()}>Changer les règles</button>
                         <Form onSubmit={(event) => {this.handlerChangerTailleEcran(event); return false}}>
                             <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center"}}controlId={"formChangerLargeur"}>
                                 <Form.Label style={{paddingRight: "10px"}}>Nombre de cases en largeur :</Form.Label>
@@ -411,15 +455,15 @@ class Quadrillage extends Component{
                         <button style={{height: "30px"}} className={"close"} onClick={() => this.handlerFermerModal()}>&times;</button>
                     </Modal.Header>
                     <Modal.Body>
-                        <Form>
-                            <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center"}}controlId={"formChangerLargeur"}>
+                        <Form onSubmit={(event) => {this.handlerChangerRegle(event); return false}}>
+                            <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center"}} controlId={"formChangerLargeur"}>
                                 <Form.Label style={{paddingRight: "10px"}}>Nombre de voisins pour rester en vie :</Form.Label>
-                                <input style={{width:"50px"}} type="text" value={this.state.changerCasesLargeur} onChange={this.handlerChampLargeur} />
+                                <input style={{width:"50px"}} type="text" value={this.state.changerResterEnVie} onChange={this.handlerChangerResterEnVie} />
                                 <Form.Label style={{paddingLeft: "10px", color: "rgb(120,120,120)"}}>Exemple: 3 ; 2</Form.Label>
                             </Form.Group>
                             <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center", paddingTop: "20px"}} controlId={"formChangerHauteur"}>
                                 <Form.Label style={{paddingRight: "10px"}}>Nombre de voisins pour naître :</Form.Label>
-                                <input style={{width:"50px"}} type="text" value={this.state.changerCasesHauteur} onChange={this.handlerChampHauteur} />
+                                <input style={{width:"50px"}} type="text" value={this.state.changerNaitre} onChange={this.handlerChangerNaitre} />
                                 <Form.Label style={{paddingLeft: "10px", color: "rgb(120,120,120)"}}>Exemple: 3 </Form.Label>
                             </Form.Group>
                             <Button style={{marginTop: "20px"}} type="submit" variant="primary">Save Changes</Button>
