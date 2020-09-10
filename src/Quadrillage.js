@@ -32,7 +32,9 @@ class Quadrillage extends Component{
             voisinsNaitre: [3],  // lot de nombre de voisins pour naître
 
             changerResterEnVie : '',    // nouveau lot nombre de voisins pour rester en vie
-            changerNaitre : ''  // nouveau lot de nombre de voisins pour naître
+            changerNaitre : '',  // nouveau lot de nombre de voisins pour naître
+
+            reglesChangees: false   // indique si les régles viennent d'être changées
         }
 
         //localStorage.clear();
@@ -233,6 +235,13 @@ class Quadrillage extends Component{
                 this.saveStateToLocalStorage();
             }
 
+            if (this.state.reglesChangees){
+                this.setState({
+                    reglesChangees: false
+                })
+                this.saveStateToLocalStorage();
+            }
+
             /* La partie n'avance que si le bouton Start est sur On */
             if (this.state.start) {
                 animationFrameId = window.requestAnimationFrame(render);
@@ -361,11 +370,34 @@ class Quadrillage extends Component{
         const tabIntNaitre = this.verifierChangementRegle(this.state.changerNaitre);
 
         if (tabIntNaitre.length !== 0 && tabIntResterEnVie.length !== 0){
-
+            this.setState({
+                voisinsResterEnVie: tabIntResterEnVie,
+                voisinsNaitre: tabIntNaitre,
+                reglesChangees: true,
+                showModal: false
+            })
         } else {
             alert("La syntaxe  n'est pas correcte ! voir l'exemple");
         }
         event.preventDefault();
+    }
+
+    handlerChampLargeur = (event) => {
+        this.setState({
+            changerCasesLargeur: event.target.value
+        })
+    }
+
+    handlerChampHauteur = (event) => {
+        this.setState({
+            changerCasesHauteur: event.target.value
+        })
+    }
+
+    handlerChampTailleCase = (event) => {
+        this.setState({
+            changerTailleCase: event.target.value
+        })
     }
 
     // TODO : il faut ajouter un bouton pour restaurer les valeurs par défaut
@@ -389,24 +421,11 @@ class Quadrillage extends Component{
         event.preventDefault();
     }
 
-    handlerChampLargeur = (event) => {
-        this.setState({
-            changerCasesLargeur: event.target.value
-        })
+    handlerRestaurerDefaut = () => {
+        localStorage.clear();
+        window.location.reload();
+        return false;
     }
-
-    handlerChampHauteur = (event) => {
-        this.setState({
-            changerCasesHauteur: event.target.value
-        })
-    }
-
-    handlerChampTailleCase = (event) => {
-        this.setState({
-            changerTailleCase: event.target.value
-        })
-    }
-
 
     /* Cette fonction est celle qui va être appelée par le composant appelant  */
     render(){
@@ -433,6 +452,7 @@ class Quadrillage extends Component{
                             </Form.Group>
                             <Button style={{marginTop: "20px"}} type="submit" variant="primary">Mettre à jour</Button>
                         </Form>
+                        <Button onClick={() => this.handlerRestaurerDefaut()} style={{marginTop: "20px"}} type="submit" variant="primary">Restaurer valeurs par défaut</Button>
                     </div>
                 </div>
 
