@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
-import {Button, Image} from "react-bootstrap";
+import {Button} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Modal from "react-bootstrap/Modal";
 import "./Quadrillage.css";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faPlay, faPause} from "@fortawesome/free-solid-svg-icons";
 
 /* Ordre d'appel des fonctions :
 Appel du composant par le parent --> état initial par le constructor --> appel de render() --> le composant est mis en place --> appel de componentDidMount() --> mise à jour du composant --> appel de render()
@@ -270,16 +272,11 @@ class Quadrillage extends Component{
         }
     }
 
-    handlerBoutonStart = () => {
-        let image = document.getElementById("imagePlayButton");
-        if (this.state.start){
-            image.setAttribute("src", require('./images/play_button.svg'));
-        } else {
-            image.setAttribute("src", require('./images/pause_button.svg'));
-        }
-        this.setState({
-            start: !this.state.start
-        })
+    handlerBoutonStartIon = () => {
+        if (!this.state.start){
+            return faPlay
+        } else
+            return faPause
     }
 
     handlerBoutonOneStep = () => {
@@ -438,7 +435,7 @@ class Quadrillage extends Component{
                         <h3>Choix des différents paramètres</h3>
                         <button style={{width: "200px", marginBottom: "20px"}} onClick={() => this.handlerBoutonChangerRegles()}>Changer les règles</button>
                         <Form onSubmit={(event) => {this.handlerChangerTailleEcran(event); return false}}>
-                            <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center"}}controlId={"formChangerLargeur"}>
+                            <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center"}} controlId={"formChangerLargeur"}>
                                 <Form.Label style={{paddingRight: "10px"}}>Nombre de cases en largeur :</Form.Label>
                                 <input style={{width:"50px"}} type="text" value={this.state.changerCasesLargeur} onChange={this.handlerChampLargeur} />
                             </Form.Group>
@@ -459,7 +456,13 @@ class Quadrillage extends Component{
                 {/* Affichage des boutons permettant d'agir sur la grille */}
                 <h3>Actions sur la grille</h3>
                 <div style={{display: "flex", justifyContent: "center"}}>
-                    <button onClick={() => this.handlerBoutonStart()}><Image id={"imagePlayButton"} src={require("./images/play_button.svg")} width={"32px"} height={"32px"}/></button>
+                    <button
+                        onClick={
+                        () => this.setState({
+                        start: !this.state.start
+                    })}>
+                        <FontAwesomeIcon id={"iconPlayButton"} icon={this.handlerBoutonStartIon()} width={"32px"} height={"32px"}/>
+                    </button>
                     <button style={{marginLeft: "30px"}} onClick={() => this.handlerBoutonOneStep()}>One Step</button>
                     <button style={{marginLeft: "30px"}} onClick={() => this.handlerBoutonStepBack()}>Step Back</button>
                     <button style={{marginLeft: "30px"}} onClick={() => this.handlerBoutonRestart()}>Restart</button>
