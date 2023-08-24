@@ -1,13 +1,14 @@
 import Form from "react-bootstrap/Form";
 import {Button} from "react-bootstrap";
 import React, {useState} from "react";
+import {DEFAULT_HEIGHT_TILES_COUNT, DEFAULT_TILE_SIZE, DEFAULT_WIDTH_TILES_COUNT} from "./utils/gridUtils";
 
 export const ChangeGridParamsForm = ({setShowChangeRulesModal, setGridParams, setGameIsRunning}) => {
 
     const [updateGridParams, setUpdateGridParams] = useState({
-        widthTilesCount : 30,    // tiles count in width
-        heightTilesCount : 30,   // tiles count in height
-        tileSize : 20,   // tile size
+        widthTilesCount : DEFAULT_WIDTH_TILES_COUNT,
+        heightTilesCount : DEFAULT_HEIGHT_TILES_COUNT,
+        tileSize : DEFAULT_TILE_SIZE,
     });
 
     const handleClickShowModal = () => {
