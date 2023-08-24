@@ -8,6 +8,7 @@
 * [ ] ajouter Tailwind au projet
 
 * [ ] améliorer les algos
+    * [ ] changer le système de matrices
 
 * [ ] restructurer encore le code
 
