@@ -1,4 +1,5 @@
-import React, {Component} from 'react';
+/*
+import React, {Component, useState} from 'react';
 import {Button} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Modal from "react-bootstrap/Modal";
@@ -6,18 +7,23 @@ import "./Quadrillage.css";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlay, faPause} from "@fortawesome/free-solid-svg-icons";
 
-/* Ordre d'appel des fonctions :
-Appel du composant par le parent --> état initial par le constructor --> appel de render() --> le composant est mis en place --> appel de componentDidMount() --> mise à jour du composant --> appel de render()
- */
 
-class Quadrillage extends Component{
+const Quadrillage = () => {
+
+    const [showModal, setShowModal] = useState(false);
+
+    const [gridParams, setGridParams] = useState({
+        widthTilesCount : 30,    // nombre de cases en largeur
+        casesHauteur : 30,   // nombre de cases en hauteur
+        tailleCase : 20,   // taille d'une case
+    });
 
     constructor(props) {
         super(props);
         this.state = {
             showModal: false,   // afficher le modal pour changer les règles
 
-            casesLargeur : 30,    // nombre de cases en largeur
+            widthTilesCount : 30,    // nombre de cases en largeur
             casesHauteur : 30,   // nombre de cases en hauteur
             tailleCase : 20,   // taille d'une case
 
@@ -47,8 +53,8 @@ class Quadrillage extends Component{
 
         this.canvasRef = new React.createRef();
 
-        /* La méthode fill remplie l'array avec des 0 */
-        /* La méthode map applique à chaque élément la méthode en argument */
+        /!* La méthode fill remplie l'array avec des 0 *!/
+        /!* La méthode map applique à chaque élément la méthode en argument *!/
 
         this.matrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
         this.backupMatrice = Array(this.state.casesLargeur).fill(0).map(() => new Array(this.state.casesHauteur).fill(0));
@@ -57,12 +63,12 @@ class Quadrillage extends Component{
         this.pinceau='';
     }
 
-    /* Fonction qui permet de stocker le state dans la ressource du navigateur */
+    /!* Fonction qui permet de stocker le state dans la ressource du navigateur *!/
     saveStateToLocalStorage = () => {
         localStorage.setItem('state', JSON.stringify(this.state));
     }
 
-    /* Fonction qui permet de compter les voisines d'une case de la matrice */
+    /!* Fonction qui permet de compter les voisines d'une case de la matrice *!/
     compterVoisines = (i, j) => {
         let voisines = 0;
         if (i !== 0) {
@@ -104,8 +110,8 @@ class Quadrillage extends Component{
         return voisines;
     }
 
-    /* Fonction qui fait évoluer la matrice en fonction de la règle choisie */
-    evoluer = () => {
+    /!* Fonction qui fait évoluer la matrice en fonction de la règle choisie *!/
+    const evoluer = () => {
         this.backupMatrice = this.matrice;
         let voisines;
         let resterEnVie;
@@ -133,7 +139,7 @@ class Quadrillage extends Component{
         this.matrice = mat;
     }
 
-    /* Fonction qui initialise la matrice avec le pattern voulu */
+    /!* Fonction qui initialise la matrice avec le pattern voulu *!/
     initPattern = () => {
         this.matrice[10][10] = 1;
         this.matrice[11][10] = 1;
@@ -142,11 +148,11 @@ class Quadrillage extends Component{
         this.matrice[11][8] = 1;
     }
 
-    /* Fonction qui trace le quadrillage */
+    /!* Fonction qui trace le quadrillage *!/
     initDessin = (pinceau, canvas) => {
         pinceau.clearRect(0, 0, canvas.width, canvas.height);
         pinceau.fillStyle = '#000000';
-        /* On dessine ici la grille */
+        /!* On dessine ici la grille *!/
         for (let h = this.state.tailleCase; h < canvas.height; h += this.state.tailleCase) {
             pinceau.moveTo(0, h);
             pinceau.lineTo(canvas.width, h);
@@ -163,7 +169,7 @@ class Quadrillage extends Component{
         pinceau.stroke();
     }
 
-    /* Fonction qui dessine en noir les cases "vivantes" et en blanc les cases "mortes" */
+    /!* Fonction qui dessine en noir les cases "vivantes" et en blanc les cases "mortes" *!/
     dessinerRectangles = (pinceau) => {
         for (let i = 0;i<this.state.casesLargeur;i++){
             for (let j = 0;j<this.state.casesHauteur;j++){
@@ -180,7 +186,7 @@ class Quadrillage extends Component{
     }
 
 
-    /* Cette fonction est appelée une fois que tous les éléments du DOM ont été mis en place */
+    /!* Cette fonction est appelée une fois que tous les éléments du DOM ont été mis en place *!/
     componentDidMount() {
 
         this.setState({
@@ -189,16 +195,16 @@ class Quadrillage extends Component{
             changerTailleCase: this.state.tailleCase
         })
 
-        /* On récupère la référence puis le contexte effectif du canvas */
+        /!* On récupère la référence puis le contexte effectif du canvas *!/
         this.canvas = this.canvasRef.current;
         this.pinceau = this.canvas.getContext("2d");
 
-        /* On initialise la matrice et on trace la grille */
+        /!* On initialise la matrice et on trace la grille *!/
         //this.initPattern();
         this.initDessin(this.pinceau, this.canvas);
         this.dessinerRectangles(this.pinceau);
 
-        /* On ajoute le listener à la grille pour cliquer sur les cases */
+        /!* On ajoute le listener à la grille pour cliquer sur les cases *!/
         this.canvas.addEventListener('click', (event) => {
             event.stopPropagation();
             if (this.state.addSquares) {
@@ -219,13 +225,13 @@ class Quadrillage extends Component{
             }
         }, false);
 
-        /* Variables pour la fonction render() */
+        /!* Variables pour la fonction render() *!/
         let animationFrameId;
         const FPS = 10;
         const delay = 1000/FPS;
         let previous = 0;
 
-        /* Fonction qui va être appelée à chaque frame avec le pas de temps choisi */
+        /!* Fonction qui va être appelée à chaque frame avec le pas de temps choisi *!/
         const render = () => {
 
             if (this.state.tailleChangee){
@@ -244,7 +250,7 @@ class Quadrillage extends Component{
                 this.saveStateToLocalStorage();
             }
 
-            /* La partie n'avance que si le bouton Start est sur On */
+            /!* La partie n'avance que si le bouton Start est sur On *!/
             if (this.state.start) {
                 animationFrameId = window.requestAnimationFrame(render);
                 const now = Date.now();
@@ -404,7 +410,7 @@ class Quadrillage extends Component{
         const nouvelleTailleCase = parseInt(this.state.changerTailleCase);
         if (!isNaN(nouvelleLargeur) && !isNaN(nouvelleHauteur) && !isNaN(nouvelleTailleCase)) {
             this.setState({
-                casesLargeur: nouvelleLargeur,
+                widthTilesCount: nouvelleLargeur,
                 casesHauteur: nouvelleHauteur,
                 tailleCase: nouvelleTailleCase
             })
@@ -424,11 +430,11 @@ class Quadrillage extends Component{
         return false;
     }
 
-    /* Cette fonction est celle qui va être appelée par le composant appelant  */
+    /!* Cette fonction est celle qui va être appelée par le composant appelant  *!/
     render(){
         return(
             <div>
-                {/* Affichage du formulaire permettant de mettre à jour les paramètres du jeu */}
+                {/!* Affichage du formulaire permettant de mettre à jour les paramètres du jeu *!/}
                 <div style={{display: "flex", flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between"}}>
                     <h1 style={{marginRight: "5%", fontSize: "5vw"}}>Jeu de la Vie</h1>
                     <div style={{border: "1px solid black", marginLeft: "5%", display: "flex", flexDirection: "column", width: "400px", padding: "20px"}}>
@@ -453,7 +459,7 @@ class Quadrillage extends Component{
                     </div>
                 </div>
 
-                {/* Affichage des boutons permettant d'agir sur la grille */}
+                {/!* Affichage des boutons permettant d'agir sur la grille *!/}
                 <h3>Actions sur la grille</h3>
                 <div style={{display: "flex", justifyContent: "center"}}>
                     <button
@@ -469,10 +475,10 @@ class Quadrillage extends Component{
                     <button id={"boutonAddSquares"} style={{marginLeft: "30px"}} onClick={() => this.handlerBoutonAddSquares()}>Add Squares (off)</button>
                 </div>
 
-                {/* Affichage de la grille */}
+                {/!* Affichage de la grille *!/}
                 <canvas style={{display:" inline", marginTop: '30px', border: "1px solid black"}} ref={this.canvasRef} width={this.state.casesLargeur * this.state.tailleCase} height={this.state.casesHauteur * this.state.tailleCase} />
 
-                {/* Modal s'affichant lorsque l'on souhaite changer les règles du jeu*/}
+                {/!* Modal s'affichant lorsque l'on souhaite changer les règles du jeu*!/}
                 <Modal animation={true} className={"modal"} show={this.state.showModal} onHide={() => this.handlerFermerModal()} backdrop={"static"}>
                     <Modal.Header style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                         <Modal.Title><h2>Changer les règles du jeu</h2></Modal.Title>
@@ -500,4 +506,4 @@ class Quadrillage extends Component{
     }
 }
 
-export default Quadrillage
+export default Quadrillage;*/

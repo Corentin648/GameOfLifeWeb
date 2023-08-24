@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import Quadrillage from "./Quadrillage";
+import Grid from "./Grid";
 
-function App() {
+const App = () => {
     return (
         <div className="App">
-            <Quadrillage/>
+            <Grid/>
         </div>
     )
 }
