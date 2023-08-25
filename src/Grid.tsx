@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import "./Quadrillage.css";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlay, faPause} from "@fortawesome/free-solid-svg-icons";
@@ -50,13 +50,13 @@ const Grid = () => {
         const canvasClickListener = (event) => {
             event.stopPropagation();
             if (addSquaresActivated) {
-                let input = event;
-                let canvasPosition = canvas.getBoundingClientRect();
+                const input = event;
+                const canvasPosition = canvas.getBoundingClientRect();
 
-                let inputX = input.pageX - (canvasPosition.left + window.scrollX);
-                let inputY = input.pageY - (canvasPosition.top + window.scrollY);
+                const inputX = input.pageX - (canvasPosition.left + window.scrollX);
+                const inputY = input.pageY - (canvasPosition.top + window.scrollY);
 
-                let [row, column] = [Math.floor(inputX / gridParams.tileSize), Math.floor(inputY / gridParams.tileSize)];
+                const [row, column] = [Math.floor(inputX / gridParams.tileSize), Math.floor(inputY / gridParams.tileSize)];
 
                 canvasMatrix.current = manuallyUpdateSquare(brushRef.current, gridParams.widthTilesCount, gridParams.heightTilesCount, gridParams.tileSize, canvasMatrix.current, row, column);
             }
@@ -70,7 +70,7 @@ const Grid = () => {
 
 
     useEffect(() => {
-        let interval = setInterval(() => {
+        const interval = setInterval(() => {
             if (gameIsRunning) {
                 canvasMatrix.current = evolve(gridParams.widthTilesCount, gridParams.heightTilesCount, canvasMatrix.current, rules.neighborsRangeStayAlive, rules.neighborsRangeBorn);
                 drawSquares(brushRef.current, gridParams.widthTilesCount, gridParams.heightTilesCount, gridParams.tileSize, canvasMatrix.current);
@@ -98,26 +98,29 @@ const Grid = () => {
         }
     }
 
+    const buttonStyle = () => "p-1 border-2 border-black rounded-md hover:bg-gray-200 hover:delay-150"
+
     return(
         <div>
             {/* Form to update grid params */}
             <ChangeGridParamsForm setGridParams={setGridParams} setShowChangeRulesModal={setShowChangeRulesModal} setGameIsRunning={setGameIsRunning}/>
 
             {/* Actions on grid */}
-            <h3>Actions sur la grille</h3>
-            <div style={{display: "flex", justifyContent: "center"}}>
+            <h3 className={"mb-4 text-2xl"}>Actions sur la grille</h3>
+            <div className={"flex justify-center items-center space-x-8"}>
                 <button
+                    className={buttonStyle()}
                     onClick={
                         () => setGameIsRunning(!gameIsRunning)}>
                     <FontAwesomeIcon id={"iconPlayButton"} icon={!gameIsRunning ? faPlay : faPause} width={"32px"} height={"32px"}/>
                 </button>
-                <button style={{marginLeft: "30px"}} onClick={handleClickOneStep}>One Step</button>
-                <button style={{marginLeft: "30px"}} onClick={handleClickRestart}>Restart</button>
-                <button style={{marginLeft: "30px"}} onClick={() => {setAddSquaresActivated(!addSquaresActivated)}}>{`Add Squares ${addSquaresActivated ? '(on)' : '(off)'}`}</button>
+                <button className={buttonStyle()} onClick={handleClickOneStep}>One Step</button>
+                <button className={buttonStyle()} onClick={handleClickRestart}>Restart</button>
+                <button className={buttonStyle()} onClick={() => {setAddSquaresActivated(!addSquaresActivated)}}>{`Add Squares ${addSquaresActivated ? '(on)' : '(off)'}`}</button>
             </div>
 
             {/* Grid */}
-            <canvas style={{display:" inline", marginTop: '30px', border: "1px solid black"}} ref={canvasRef} width={gridParams.widthTilesCount * gridParams.tileSize} height={gridParams.heightTilesCount * gridParams.tileSize} />
+            <canvas className={"inline mt-8 border-[1px] border-black"} ref={canvasRef} width={gridParams.widthTilesCount * gridParams.tileSize} height={gridParams.heightTilesCount * gridParams.tileSize} />
 
             {/* Changing rules modal*/}
             <ChangeRulesModal setRules={setRules} setShowModal={setShowChangeRulesModal} showModal={showChangeRulesModal}/>

@@ -1,6 +1,6 @@
 import Form from "react-bootstrap/Form";
 import {Button} from "react-bootstrap";
-import React, {useState} from "react";
+import {useState} from "react";
 import {DEFAULT_HEIGHT_TILES_COUNT, DEFAULT_TILE_SIZE, DEFAULT_WIDTH_TILES_COUNT} from "./utils/gridUtils";
 
 export const ChangeGridParamsForm = ({setShowChangeRulesModal, setGridParams, setGameIsRunning}) => {
@@ -76,6 +76,22 @@ export const ChangeGridParamsForm = ({setShowChangeRulesModal, setGridParams, se
                     <Button style={{marginTop: "20px"}} type="submit" variant="primary">Mettre à jour</Button>
                 </Form>
                 <Button onClick={handleRestoreDefaultParams} style={{marginTop: "20px"}} type="submit" variant="primary">Restaurer valeurs par défaut</Button>
+
+                <form onSubmit={(event) => {handleSubmitGridParamsUpdate(event); return false}}>
+                    <div>
+                        <label className={"pr-4"}>Nombre de cases en largeur :</label>
+                        <input style={{width:"50px"}} type="text" value={updateGridParams.widthTilesCount} onChange={handleUpdateGridWidth} />
+                    </div>
+                    <div>
+                        <label className={"pr-4"}>Nombre de cases en hauteur :</label>
+                        <input style={{width:"50px"}} type="text" value={updateGridParams.heightTilesCount} onChange={handleUpdateGridHeight} />
+                    </div>
+                    <div>
+                        <label className={"pr-4"}>Taille d'une case :</label>
+                        <input style={{width:"50px"}} type="text" value={updateGridParams.tileSize} onChange={handleUpdateGridTileSize} />
+                    </div>
+                    <button type="submit">Mettre à jour</button>
+                </form>
             </div>
         </div>
     )
