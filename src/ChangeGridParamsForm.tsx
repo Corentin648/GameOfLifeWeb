@@ -1,14 +1,13 @@
-import Form from "react-bootstrap/Form";
-import {Button} from "react-bootstrap";
 import {useState} from "react";
-import {DEFAULT_HEIGHT_TILES_COUNT, DEFAULT_TILE_SIZE, DEFAULT_WIDTH_TILES_COUNT} from "./utils/gridUtils";
+import {faCopy, faRotateRight} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export const ChangeGridParamsForm = ({setShowChangeRulesModal, setGridParams, setGameIsRunning}) => {
 
     const [updateGridParams, setUpdateGridParams] = useState({
-        widthTilesCount : DEFAULT_WIDTH_TILES_COUNT,
-        heightTilesCount : DEFAULT_HEIGHT_TILES_COUNT,
-        tileSize : DEFAULT_TILE_SIZE,
+        widthTilesCount : '',
+        heightTilesCount : '',
+        tileSize : '',
     });
 
     const handleClickShowModal = () => {
@@ -16,12 +15,23 @@ export const ChangeGridParamsForm = ({setShowChangeRulesModal, setGridParams, se
     }
 
     const handleSubmitGridParamsUpdate = (event) => {
-        if (!isNaN(updateGridParams.widthTilesCount) && !isNaN(updateGridParams.heightTilesCount) && !isNaN(updateGridParams.tileSize)) {
+        const newWidthTilesCount = parseInt(updateGridParams.widthTilesCount);
+        const newHeightTilesCount = parseInt(updateGridParams.heightTilesCount);
+        const newTileSize = parseInt(updateGridParams.tileSize);
+
+        const newWidthTilesCountChecked = !isNaN(newWidthTilesCount) && newWidthTilesCount.toString() === updateGridParams.widthTilesCount;
+        const newHeightTilesCountChecked = !isNaN(newHeightTilesCount) && newHeightTilesCount.toString() === updateGridParams.heightTilesCount;
+        const newTileSizeChecked = !isNaN(newTileSize) && newTileSize.toString() === updateGridParams.tileSize;
+
+        if (newWidthTilesCountChecked && newHeightTilesCountChecked && newTileSizeChecked) {
             setGridParams({
-                ...updateGridParams
+                widthTilesCount: newWidthTilesCount,
+                heightTilesCount: newHeightTilesCount,
+                tileSize: newTileSize
             })
             setGameIsRunning(false);
         } else {
+            console.log("yoyoyo")
             alert('Il faut entrer des nombres entiers !');
         }
         //this.saveStateToLocalStorage();
@@ -31,21 +41,21 @@ export const ChangeGridParamsForm = ({setShowChangeRulesModal, setGridParams, se
     const handleUpdateGridWidth = (event) => {
         setUpdateGridParams({
             ...updateGridParams,
-            widthTilesCount: parseInt(event.target.value)
+            widthTilesCount: event.target.value
         })
     }
 
     const handleUpdateGridHeight = (event) => {
         setUpdateGridParams({
             ...updateGridParams,
-            heightTilesCount: parseInt(event.target.value)
+            heightTilesCount: event.target.value
         })
     }
 
     const handleUpdateGridTileSize = (event) => {
         setUpdateGridParams({
             ...updateGridParams,
-            tileSize: parseInt(event.target.value)
+            tileSize: event.target.value
         })
     }
 
@@ -54,45 +64,45 @@ export const ChangeGridParamsForm = ({setShowChangeRulesModal, setGridParams, se
         window.location.reload();
     }
 
-    return(
-        <div style={{display: "flex", flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between"}}>
-            <h1 style={{marginRight: "5%", fontSize: "5vw"}}>Jeu de la Vie</h1>
-            <div style={{border: "1px solid black", marginLeft: "5%", display: "flex", flexDirection: "column", width: "400px", padding: "20px"}}>
-                <h3>Choix des différents paramètres</h3>
-                <button style={{width: "200px", marginBottom: "20px"}} onClick={handleClickShowModal}>Changer les règles</button>
-                <Form onSubmit={(event) => {handleSubmitGridParamsUpdate(event); return false}}>
-                    <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center"}} controlId={"formChangerLargeur"}>
-                        <Form.Label style={{paddingRight: "10px"}}>Nombre de cases en largeur :</Form.Label>
-                        <input style={{width:"50px"}} type="text" value={updateGridParams.widthTilesCount} onChange={handleUpdateGridWidth} />
-                    </Form.Group>
-                    <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center", paddingTop: "20px"}} controlId={"formChangerHauteur"}>
-                        <Form.Label style={{paddingRight: "10px"}}>Nombre de cases en hauteur :</Form.Label>
-                        <input style={{width:"50px"}} type="text" value={updateGridParams.heightTilesCount} onChange={handleUpdateGridHeight} />
-                    </Form.Group>
-                    <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center", paddingTop: "20px"}} controlId={"formChangerTailleCase"}>
-                        <Form.Label style={{paddingRight: "10px"}}>Taille d'une case :</Form.Label>
-                        <input style={{width:"50px"}} type="text" value={updateGridParams.tileSize} onChange={handleUpdateGridTileSize} />
-                    </Form.Group>
-                    <Button style={{marginTop: "20px"}} type="submit" variant="primary">Mettre à jour</Button>
-                </Form>
-                <Button onClick={handleRestoreDefaultParams} style={{marginTop: "20px"}} type="submit" variant="primary">Restaurer valeurs par défaut</Button>
+    const inputTextStyle = () => "border-2 border-gray-200 rounded-md px-2 py-[2px] w-24"
 
-                <form onSubmit={(event) => {handleSubmitGridParamsUpdate(event); return false}}>
-                    <div>
+    return(
+        <section className={"flex flex-row-reverse items-center justify-between"}>
+            <h1 className={"mr-[5%] text-[5vw]"}>Jeu de la Vie</h1>
+
+            <div className={"border border-black rounded-md mt-8 ml-[5%] flex flex-col w-[400px] p-[20px] items-center space-y-4"}>
+                <h3 className={"text-2xl"}>Choix des différents paramètres</h3>
+
+                <button className={"w-[200px] mb-[20px] p-1 border-2 border-black rounded-md hover:bg-gray-200 hover:delay-150"} onClick={handleClickShowModal}>
+                    Changer les règles
+                    <FontAwesomeIcon id={"iconPlayButton"} icon={faCopy} width={"32px"} height={"32px"}/>
+                </button>
+
+                <hr className={"w-full"}/>
+
+                <form className={"flex flex-col justify-start space-y-4"} onSubmit={(event) => {handleSubmitGridParamsUpdate(event); return false}}>
+                    <div className={"w-full text-left"}>
                         <label className={"pr-4"}>Nombre de cases en largeur :</label>
-                        <input style={{width:"50px"}} type="text" value={updateGridParams.widthTilesCount} onChange={handleUpdateGridWidth} />
+                        <input className={inputTextStyle()} type="text" value={updateGridParams.widthTilesCount} onChange={handleUpdateGridWidth} />
                     </div>
-                    <div>
+                    <div className={"w-full text-left"}>
                         <label className={"pr-4"}>Nombre de cases en hauteur :</label>
-                        <input style={{width:"50px"}} type="text" value={updateGridParams.heightTilesCount} onChange={handleUpdateGridHeight} />
+                        <input className={inputTextStyle()} type="text" value={updateGridParams.heightTilesCount} onChange={handleUpdateGridHeight} />
                     </div>
-                    <div>
+                    <div className={"w-full text-left"}>
                         <label className={"pr-4"}>Taille d'une case :</label>
-                        <input style={{width:"50px"}} type="text" value={updateGridParams.tileSize} onChange={handleUpdateGridTileSize} />
+                        <input className={inputTextStyle()} type="text" value={updateGridParams.tileSize} onChange={handleUpdateGridTileSize} />
                     </div>
-                    <button type="submit">Mettre à jour</button>
+                    <button className={"self-end p-1 border-2 border-black rounded-md hover:bg-gray-200 hover:delay-150"} type="submit">Mettre à jour</button>
                 </form>
+
+                <hr className={"w-full"}/>
+
+                <button className={"mt-6 p-2 bg-gray-200 rounded-md hover:bg-gray-300 hover:delay-150"} onClick={handleRestoreDefaultParams}>
+                    <FontAwesomeIcon id={"iconPlayButton"} icon={faRotateRight} width={"32px"} height={"32px"}/>
+                    Restaurer les valeurs par défaut
+                </button>
             </div>
-        </div>
+        </section>
     )
 }

@@ -47,7 +47,7 @@ const Grid = () => {
     useEffect(() => {
         const canvas : HTMLCanvasElement = canvasRef.current;
 
-        const canvasClickListener = (event) => {
+        const canvasClickListener = (event : MouseEvent) => {
             event.stopPropagation();
             if (addSquaresActivated) {
                 const input = event;
