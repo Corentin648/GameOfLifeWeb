@@ -98,29 +98,34 @@ const Grid = () => {
         }
     }
 
+    const getCanvasWidth = (widthTilesCount : number, tileSize : number) => widthTilesCount * tileSize;
+    const getCanvasHeight = (heightTilesCount : number, tileSize : number) => heightTilesCount * tileSize;
+
     const buttonStyle = () => "p-1 border-2 border-black rounded-md hover:bg-gray-200 hover:delay-150"
 
     return(
-        <div>
+        <div className={"h-max relative flex flex-col items-center"}>
             {/* Form to update grid params */}
             <ChangeGridParamsForm setGridParams={setGridParams} setShowChangeRulesModal={setShowChangeRulesModal} setGameIsRunning={setGameIsRunning}/>
 
             {/* Actions on grid */}
-            <h3 className={"mb-4 text-2xl"}>Actions sur la grille</h3>
-            <div className={"flex justify-center items-center space-x-8"}>
-                <button
-                    className={buttonStyle()}
-                    onClick={
-                        () => setGameIsRunning(!gameIsRunning)}>
-                    <FontAwesomeIcon id={"iconPlayButton"} icon={!gameIsRunning ? faPlay : faPause} width={"32px"} height={"32px"}/>
-                </button>
-                <button className={buttonStyle()} onClick={handleClickOneStep}>One Step</button>
-                <button className={buttonStyle()} onClick={handleClickRestart}>Restart</button>
-                <button className={buttonStyle()} onClick={() => {setAddSquaresActivated(!addSquaresActivated)}}>{`Add Squares ${addSquaresActivated ? '(on)' : '(off)'}`}</button>
+            <div className={"flex flex-col w-max space-y-4"}>
+                <h3 className={"text-2xl text-center"}>Actions sur la grille</h3>
+                <div className={"flex justify-center items-center space-x-8"}>
+                    <button
+                        className={buttonStyle()}
+                        onClick={
+                            () => setGameIsRunning(!gameIsRunning)}>
+                        <FontAwesomeIcon id={"iconPlayButton"} icon={!gameIsRunning ? faPlay : faPause} width={"32px"} height={"32px"}/>
+                    </button>
+                    <button className={buttonStyle()} onClick={handleClickOneStep}>One Step</button>
+                    <button className={buttonStyle()} onClick={handleClickRestart}>Restart</button>
+                    <button className={buttonStyle()} onClick={() => {setAddSquaresActivated(!addSquaresActivated)}}>{`Add Squares ${addSquaresActivated ? '(on)' : '(off)'}`}</button>
+                </div>
             </div>
 
             {/* Grid */}
-            <canvas className={"inline mt-8 border-[1px] border-black"} ref={canvasRef} width={gridParams.widthTilesCount * gridParams.tileSize} height={gridParams.heightTilesCount * gridParams.tileSize} />
+            <canvas style={{width: `${getCanvasWidth(gridParams.widthTilesCount, gridParams.tileSize)}px`, height: `${getCanvasHeight(gridParams.heightTilesCount, gridParams.tileSize)}px`}} className={"inline mt-8 border-[1px] border-black"} ref={canvasRef} width={`${getCanvasWidth(gridParams.widthTilesCount, gridParams.tileSize)}px`} height={`${getCanvasHeight(gridParams.heightTilesCount, gridParams.tileSize)}px`}/>
 
             {/* Changing rules modal*/}
             <ChangeRulesModal setRules={setRules} setShowModal={setShowChangeRulesModal} showModal={showChangeRulesModal}/>

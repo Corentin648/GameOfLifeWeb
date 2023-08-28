@@ -1,4 +1,4 @@
-import {useState} from "react";
+import React, {useState} from "react";
 import {faCopy, faRotateRight} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
@@ -14,7 +14,7 @@ export const ChangeGridParamsForm = ({setShowChangeRulesModal, setGridParams, se
         setShowChangeRulesModal(true);
     }
 
-    const handleSubmitGridParamsUpdate = (event) => {
+    const handleSubmitGridParamsUpdate = (event : React.FormEvent<HTMLFormElement>) => {
         const newWidthTilesCount = parseInt(updateGridParams.widthTilesCount);
         const newHeightTilesCount = parseInt(updateGridParams.heightTilesCount);
         const newTileSize = parseInt(updateGridParams.tileSize);
@@ -38,21 +38,21 @@ export const ChangeGridParamsForm = ({setShowChangeRulesModal, setGridParams, se
         event.preventDefault();
     }
 
-    const handleUpdateGridWidth = (event) => {
+    const handleUpdateGridWidth = (event : React.ChangeEvent<HTMLInputElement>) => {
         setUpdateGridParams({
             ...updateGridParams,
             widthTilesCount: event.target.value
         })
     }
 
-    const handleUpdateGridHeight = (event) => {
+    const handleUpdateGridHeight = (event : React.ChangeEvent<HTMLInputElement>) => {
         setUpdateGridParams({
             ...updateGridParams,
             heightTilesCount: event.target.value
         })
     }
 
-    const handleUpdateGridTileSize = (event) => {
+    const handleUpdateGridTileSize = (event : React.ChangeEvent<HTMLInputElement>) => {
         setUpdateGridParams({
             ...updateGridParams,
             tileSize: event.target.value
@@ -64,10 +64,10 @@ export const ChangeGridParamsForm = ({setShowChangeRulesModal, setGridParams, se
         window.location.reload();
     }
 
-    const inputTextStyle = () => "border-2 border-gray-200 rounded-md px-2 py-[2px] w-24"
+    const inputTextStyle = () => "border-2 border-gray-200 rounded-md px-2 py-[2px] w-24 focus:outline-none"
 
     return(
-        <section className={"flex flex-row-reverse items-center justify-between"}>
+        <section className={"w-full flex flex-row-reverse items-center justify-between"}>
             <h1 className={"mr-[5%] text-[5vw]"}>Jeu de la Vie</h1>
 
             <div className={"border border-black rounded-md mt-8 ml-[5%] flex flex-col w-[400px] p-[20px] items-center space-y-4"}>

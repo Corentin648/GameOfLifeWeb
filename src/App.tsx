@@ -1,9 +1,8 @@
-import './App.css';
 import Grid from "./Grid";
 
 const App = () => {
     return (
-        <div className="App">
+        <div className="h-max">
             <Grid/>
         </div>
     )

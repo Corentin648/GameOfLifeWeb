@@ -1,7 +1,6 @@
-import {Button} from "react-bootstrap";
-import Modal from "react-bootstrap/Modal";
-import Form from 'react-bootstrap/Form';
-import {useState} from "react";
+import React, {useState} from "react";
+import {faXmark} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export const ChangeRulesModal = ({showModal, setShowModal, setRules}) => {
 
@@ -14,31 +13,7 @@ export const ChangeRulesModal = ({showModal, setShowModal, setRules}) => {
         setShowModal(false);
     }
 
-    const handleUpdateStayAlive = (event) => {
-        setUpdateRules({
-            ...updateRules,
-            neighborsRangeStayAlive: event.target.value
-        });
-    }
-
-    const handleUpdateBorn = (event) => {
-        setUpdateRules({
-            ...updateRules,
-            neighborsRangeBorn: event.target.value
-        });
-    }
-
-    const checkRuleUpdate = (input) => {
-        return input.split(';').reduce((acc, element) => {
-            const convertedElement = parseInt(element);
-            if (!isNaN(convertedElement) && element === convertedElement.toString() && !acc.includes(convertedElement)){
-                acc.push(convertedElement);
-            }
-            return acc;
-        }, []);
-    }
-
-    const handleSubmitRulesUpdate = (event) => {
+    const handleSubmitRulesUpdate = (event : React.FormEvent<HTMLFormElement>) => {
         const intArrayStayAlive =  checkRuleUpdate(updateRules.neighborsRangeStayAlive);
         const intArrayBorn = checkRuleUpdate(updateRules.neighborsRangeBorn);
 
@@ -54,27 +29,58 @@ export const ChangeRulesModal = ({showModal, setShowModal, setRules}) => {
         event.preventDefault();
     }
 
+    const handleUpdateStayAlive = (event : React.ChangeEvent<HTMLInputElement>) => {
+        setUpdateRules({
+            ...updateRules,
+            neighborsRangeStayAlive: event.target.value
+        });
+    }
+
+    const handleUpdateBorn = (event : React.ChangeEvent<HTMLInputElement>) => {
+        setUpdateRules({
+            ...updateRules,
+            neighborsRangeBorn: event.target.value
+        });
+    }
+
+    const checkRuleUpdate = (input : string) => {
+        return input.split(';').reduce((acc : number[], element) => {
+            const convertedElement = parseInt(element);
+            if (!isNaN(convertedElement) && element === convertedElement.toString() && !acc.includes(convertedElement)){
+                acc.push(convertedElement);
+            }
+            return acc;
+        }, []);
+    }
+
+    const inputTextStyle = () => "border-2 border-gray-200 rounded-md px-2 py-[2px] w-24 focus:outline-none"
+
     return(
-        <Modal animation={false} className={"modal"} show={showModal} onHide={handleCloseModal} backdrop={"static"}>
-            <Modal.Header style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-                <Modal.Title><h2>Changer les règles du jeu</h2></Modal.Title>
-                <button style={{height: "30px"}} className={"close"} onClick={handleCloseModal}>&times;</button>
-            </Modal.Header>
-            <Modal.Body>
-                <Form onSubmit={(event) => {handleSubmitRulesUpdate(event); return false}}>
-                    <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center"}} controlId={"formChangerLargeur"}>
-                        <Form.Label style={{paddingRight: "10px"}}>Nombre de voisins pour rester en vie :</Form.Label>
-                        <input style={{width:"50px"}} type="text" value={updateRules.neighborsRangeStayAlive} onChange={handleUpdateStayAlive} />
-                        <Form.Label style={{paddingLeft: "10px", color: "rgb(120,120,120)"}}>Exemple: 3 ; 2</Form.Label>
-                    </Form.Group>
-                    <Form.Group style={{display: "flex", justifyContent: "left", alignItems: "center", paddingTop: "20px"}} controlId={"formChangerHauteur"}>
-                        <Form.Label style={{paddingRight: "10px"}}>Nombre de voisins pour naître :</Form.Label>
-                        <input style={{width:"50px"}} type="text" value={updateRules.neighborsRangeBorn} onChange={handleUpdateBorn} />
-                        <Form.Label style={{paddingLeft: "10px", color: "rgb(120,120,120)"}}>Exemple: 3 </Form.Label>
-                    </Form.Group>
-                    <Button style={{marginTop: "20px"}} type="submit" variant="primary">Save Changes</Button>
-                </Form>
-            </Modal.Body>
-        </Modal>
+    <div style={{backgroundColor: "rgba(0, 0, 0, 0.7)"}} className={`absolute top-0 left-0 w-full h-full z-10 flex justify-center items-center ${!showModal ?'hidden' : ''}`}>
+        <div style={{backgroundColor: "rgba(255, 255, 255, 1)"}} className={"fixed top-0 bottom-0 right-0 left-0 m-auto w-max h-max px-4 py-2 rounded-md space-y-4"}>
+            <div className={"flex justify-between items-center"}>
+                <h2 className={"text-2xl"}>Changer les règles du jeu</h2>
+                <button className={"bg-gray-200 rounded-full w-6 h-6 flex justify-center items-center"} onClick={handleCloseModal}>
+                    <FontAwesomeIcon className={"w-3 h-3"} id={"iconPlayButton"} icon={faXmark}/>
+                </button>
+            </div>
+            <hr/>
+            <div>
+                <form className={"flex flex-col justify-start space-y-4"} onSubmit={(event) => {handleSubmitRulesUpdate(event); return false}}>
+                    <div className={"w-full text-left flex items-center space-x-3"}>
+                        <label>Nombre de voisins pour rester en vie :</label>
+                        <input className={inputTextStyle()} type="text" value={updateRules.neighborsRangeStayAlive} onChange={handleUpdateStayAlive} />
+                        <label className={"text-gray-500"}>Exemple: 3 ; 2</label>
+                    </div>
+                    <div className={"w-full text-left flex items-center space-x-3"}>
+                        <label>Nombre de voisins pour naître :</label>
+                        <input className={inputTextStyle()} type="text" value={updateRules.neighborsRangeBorn} onChange={handleUpdateBorn} />
+                        <label className={"text-gray-500"}>Exemple: 3</label>
+                    </div>
+                    <button className={"self-end p-1 border-2 border-black rounded-md hover:bg-gray-200 hover:delay-150"} type="submit">Mettre à jour</button>
+                </form>
+            </div>
+        </div>
+    </div>
     )
 }
