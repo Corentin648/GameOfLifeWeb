@@ -2,13 +2,14 @@ import {useEffect, useRef, useState} from 'react';
 import "./Quadrillage.css";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlay, faPause} from "@fortawesome/free-solid-svg-icons";
-import {evolve, DEFAULT_WIDTH_TILES_COUNT, DEFAULT_HEIGHT_TILES_COUNT, DEFAULT_TILE_SIZE} from "./utils/gridUtils";
-import {drawSquares, initDrawing, manuallyUpdateSquare} from "./utils/drawingUtils";
-import {initPattern} from "./utils/matrixUtils";
+import {DEFAULT_WIDTH_TILES_COUNT, DEFAULT_HEIGHT_TILES_COUNT, DEFAULT_TILE_SIZE} from "./shared/utils/gridUtils";
+import {drawSquares, initDrawing, manuallyUpdateSquare} from "./shared/utils/drawingUtils";
+import {evolve, initPattern} from "./shared/utils/matrixUtils";
 import {ChangeRulesModal} from "./ChangeRulesModal";
 import {ChangeGridParamsForm} from "./ChangeGridParamsForm";
 import * as math from "mathjs";
 import {Matrix} from "mathjs";
+import type {GridParams} from "./shared/models/GridParams.ts";
 
 
 const Grid = () => {
@@ -17,7 +18,7 @@ const Grid = () => {
 
     const [addSquaresActivated, setAddSquaresActivated] = useState(false);
 
-    const [gridParams, setGridParams] = useState({
+    const [gridParams, setGridParams] = useState<GridParams>({
         widthTilesCount : DEFAULT_WIDTH_TILES_COUNT,
         heightTilesCount : DEFAULT_HEIGHT_TILES_COUNT,
         tileSize : DEFAULT_TILE_SIZE,
@@ -43,7 +44,7 @@ const Grid = () => {
         brushRef.current = canvasRef.current.getContext("2d");
 
         initDrawing(brushRef.current, gridParams.tileSize);
-        drawSquares(brushRef.current, gridParams.widthTilesCount, gridParams.heightTilesCount, gridParams.tileSize, canvasMatrix.current);
+        drawSquares(brushRef.current, gridParams, canvasMatrix.current);
     }, [gridParams]);
 
 
@@ -61,7 +62,7 @@ const Grid = () => {
 
                 const [row, column] = [Math.floor(inputX / gridParams.tileSize), Math.floor(inputY / gridParams.tileSize)];
 
-                canvasMatrix.current = manuallyUpdateSquare(brushRef.current, gridParams.widthTilesCount, gridParams.heightTilesCount, gridParams.tileSize, canvasMatrix.current, row, column);
+                canvasMatrix.current = manuallyUpdateSquare(brushRef.current, gridParams, canvasMatrix.current, row, column);
             }
         }
 
@@ -75,8 +76,8 @@ const Grid = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             if (gameIsRunning) {
-                canvasMatrix.current = evolve(gridParams.widthTilesCount, gridParams.heightTilesCount, canvasMatrix.current, rules.neighborsRangeStayAlive, rules.neighborsRangeBorn);
-                drawSquares(brushRef.current, gridParams.widthTilesCount, gridParams.heightTilesCount, gridParams.tileSize, canvasMatrix.current);
+                canvasMatrix.current = evolve(canvasMatrix.current, rules.neighborsRangeStayAlive, rules.neighborsRangeBorn);
+                drawSquares(brushRef.current, gridParams, canvasMatrix.current);
             }
         }, 100);
 
@@ -87,8 +88,8 @@ const Grid = () => {
 
     const handleClickOneStep = () => {
         if (!gameIsRunning){
-            canvasMatrix.current = evolve(gridParams.widthTilesCount, gridParams.heightTilesCount, canvasMatrix.current, rules.neighborsRangeStayAlive, rules.neighborsRangeBorn);
-            drawSquares(brushRef.current, gridParams.widthTilesCount, gridParams.heightTilesCount, gridParams.tileSize, canvasMatrix.current);
+            canvasMatrix.current = evolve(canvasMatrix.current, rules.neighborsRangeStayAlive, rules.neighborsRangeBorn);
+            drawSquares(brushRef.current, gridParams, canvasMatrix.current);
         }
     }
     const handleClickRestart = () => {
@@ -97,7 +98,7 @@ const Grid = () => {
         } else {
             canvasMatrix.current = math.zeros(gridParams.widthTilesCount, gridParams.heightTilesCount) as Matrix;
             initPattern(canvasMatrix.current);
-            drawSquares(brushRef.current, gridParams.widthTilesCount, gridParams.heightTilesCount, gridParams.tileSize, canvasMatrix.current);
+            drawSquares(brushRef.current, gridParams, canvasMatrix.current);
         }
     }
 
