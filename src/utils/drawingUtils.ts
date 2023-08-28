@@ -37,13 +37,13 @@ const drawOneSquare = (brush, widthTilesCount, heightTilesCount, tileSize, matri
     const canvasHeight = brush.canvas.height;
     const canvasWidth = brush.canvas.width;
 
-    brush.clearRect(row * tileSize + 1, column * tileSize + 1, canvasWidth / widthTilesCount - 2, canvasHeight / heightTilesCount - 2);
+    brush.clearRect(row * tileSize, column * tileSize, canvasWidth / widthTilesCount - 1, canvasHeight / heightTilesCount - 1);
     if (matrix[row][column] === 1){
         brush.fillStyle = '#000000';
-        brush.fillRect(row * tileSize + 1, column * tileSize + 1, canvasWidth / widthTilesCount - 2, canvasHeight / heightTilesCount - 2);
+        brush.fillRect(row * tileSize, column * tileSize, canvasWidth / widthTilesCount - 1, canvasHeight / heightTilesCount - 1);
     } else if (matrix[row][column] === 0) {
         brush.fillStyle = '#FFFFFF';
-        brush.fillRect(row * tileSize + 1, column * tileSize + 1, canvasWidth / widthTilesCount - 2, canvasHeight / heightTilesCount - 2);
+        brush.fillRect(row * tileSize, column * tileSize, canvasWidth / widthTilesCount - 1, canvasHeight / heightTilesCount - 1);
     }
 }
 
@@ -54,14 +54,14 @@ export const manuallyUpdateSquare = (brush, widthTilesCount, heightTilesCount, t
 
     let matrixUpdated = matrix;
 
-    brush.clearRect(row * tileSize + 1, column * tileSize + 1, canvasWidth / widthTilesCount - 2, canvasHeight / heightTilesCount - 2);
+    brush.clearRect(row * tileSize, column * tileSize, canvasWidth / widthTilesCount - 1, canvasHeight / heightTilesCount - 1);
     if (matrix[row][column] === 0){
         brush.fillStyle = '#000000';
-        brush.fillRect(row * tileSize + 1, column * tileSize + 1, canvasWidth / widthTilesCount - 2, canvasHeight / heightTilesCount - 2);
+        brush.fillRect(row * tileSize, column * tileSize, canvasWidth / widthTilesCount - 1, canvasHeight / heightTilesCount - 1);
         matrixUpdated[row][column] = 1;
     } else if (matrix[row][column] === 1) {
         brush.fillStyle = '#FFFFFF';
-        brush.fillRect(row * tileSize + 1, column * tileSize + 1, canvasWidth / widthTilesCount - 2, canvasHeight / heightTilesCount - 2);
+        brush.fillRect(row * tileSize, column * tileSize, canvasWidth / widthTilesCount - 1, canvasHeight / heightTilesCount - 1);
         matrixUpdated[row][column] = 0;
     }
 
