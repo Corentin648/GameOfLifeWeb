@@ -7,6 +7,8 @@ import {drawSquares, initDrawing, manuallyUpdateSquare} from "./utils/drawingUti
 import {initPattern} from "./utils/matrixUtils";
 import {ChangeRulesModal} from "./ChangeRulesModal";
 import {ChangeGridParamsForm} from "./ChangeGridParamsForm";
+import * as math from "mathjs";
+import {Matrix} from "mathjs";
 
 
 const Grid = () => {
@@ -30,11 +32,12 @@ const Grid = () => {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const brushRef = useRef<CanvasRenderingContext2D>(null);
-    const canvasMatrix = useRef([[]]);
+    const canvasMatrix = useRef<Matrix>(null);
 
 
     useEffect(() => {
-        canvasMatrix.current = Array(gridParams.widthTilesCount).fill(0).map(() => new Array(gridParams.heightTilesCount).fill(0));
+
+        canvasMatrix.current = math.zeros(gridParams.widthTilesCount, gridParams.heightTilesCount) as Matrix;
         initPattern(canvasMatrix.current);
 
         brushRef.current = canvasRef.current.getContext("2d");
@@ -92,7 +95,7 @@ const Grid = () => {
         if (gameIsRunning){
             alert("Le jeu doit être en pause !");
         } else {
-            canvasMatrix.current = Array(gridParams.widthTilesCount).fill(0).map(() => new Array(gridParams.heightTilesCount).fill(0));
+            canvasMatrix.current = math.zeros(gridParams.widthTilesCount, gridParams.heightTilesCount) as Matrix;
             initPattern(canvasMatrix.current);
             drawSquares(brushRef.current, gridParams.widthTilesCount, gridParams.heightTilesCount, gridParams.tileSize, canvasMatrix.current);
         }
