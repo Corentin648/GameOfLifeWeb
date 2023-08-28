@@ -1,11 +1,11 @@
-import Grid from "./Grid";
+import Grid from './Grid';
 
 const App = () => {
     return (
         <div className="h-max">
-            <Grid/>
+            <Grid />
         </div>
-    )
-}
+    );
+};
 
 export default App;

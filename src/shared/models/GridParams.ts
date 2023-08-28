@@ -1,5 +1,5 @@
 export type GridParams = {
-    widthTilesCount: number,
-    heightTilesCount: number,
-    tileSize: number
-}
+    widthTilesCount: number;
+    heightTilesCount: number;
+    tileSize: number;
+};
