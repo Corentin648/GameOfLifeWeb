@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { faCopy, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import './ChangeGridParamsForm.css';
 
 export const ChangeGridParamsForm = ({ setShowChangeRulesModal, setGridParams, setGameIsRunning }) => {
     const [updateGridParams, setUpdateGridParams] = useState({
@@ -101,7 +102,7 @@ export const ChangeGridParamsForm = ({ setShowChangeRulesModal, setGridParams, s
                         <label className={'pr-4'}>Taille d'une case :</label>
                         <input className={inputTextStyle()} type="text" value={updateGridParams.tileSize} onChange={handleUpdateGridTileSize} />
                     </div>
-                    <button className={'self-end p-1 border-2 border-black rounded-md hover:bg-gray-200 hover:delay-150'} type="submit">
+                    <button className={'bubble-button self-end p-2'} type="submit">
                         Mettre à jour
                     </button>
                 </form>
