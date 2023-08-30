@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import './Quadrillage.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
 import { DEFAULT_WIDTH_TILES_COUNT, DEFAULT_HEIGHT_TILES_COUNT, DEFAULT_TILE_SIZE } from './shared/utils/gridUtils';
 import { drawSquares, initDrawing, manuallyUpdateSquare } from './shared/utils/drawingUtils';
@@ -10,6 +9,7 @@ import { ChangeGridParamsForm } from './ChangeGridParamsForm';
 import * as math from 'mathjs';
 import { Matrix } from 'mathjs';
 import type { GridParams } from './shared/models/GridParams.ts';
+import { BounceButton } from './components/button/bounce-button/BounceButton.tsx';
 
 const Grid = () => {
     const [gameIsRunning, setGameIsRunning] = useState(false);
@@ -97,8 +97,6 @@ const Grid = () => {
     const getCanvasWidth = (widthTilesCount: number, tileSize: number) => widthTilesCount * tileSize;
     const getCanvasHeight = (heightTilesCount: number, tileSize: number) => heightTilesCount * tileSize;
 
-    const buttonStyle = () => 'p-1 border-2 border-black rounded-md hover:bg-gray-200 hover:delay-150';
-
     return (
         <div className={'h-max relative flex flex-col items-center'}>
             {/* Form to update grid params */}
@@ -112,21 +110,11 @@ const Grid = () => {
             <div className={'flex flex-col w-max space-y-4'}>
                 <h3 className={'text-2xl text-center'}>Actions sur la grille</h3>
                 <div className={'flex justify-center items-center space-x-8'}>
-                    <button className={buttonStyle()} onClick={() => setGameIsRunning(!gameIsRunning)}>
-                        <FontAwesomeIcon id={'iconPlayButton'} icon={!gameIsRunning ? faPlay : faPause} width={'32px'} height={'32px'} />
-                    </button>
-                    <button className={buttonStyle()} onClick={handleClickOneStep}>
-                        One Step
-                    </button>
-                    <button className={buttonStyle()} onClick={handleClickRestart}>
-                        Restart
-                    </button>
-                    <button
-                        className={buttonStyle()}
-                        onClick={() => {
-                            setAddSquaresActivated(!addSquaresActivated);
-                        }}
-                    >{`Add Squares ${addSquaresActivated ? '(on)' : '(off)'}`}</button>
+                    <BounceButton icon={!gameIsRunning ? faPlay : faPause} onClick={() => setGameIsRunning(!gameIsRunning)}/>
+                    <BounceButton label={'One step'} onClick={handleClickOneStep}/>
+                    <BounceButton label={'Restart'} onClick={handleClickRestart}/>
+                    <BounceButton label={`Add Squares ${addSquaresActivated ? '(on)' : '(off)'}`} onClick={() => {
+                        setAddSquaresActivated(!addSquaresActivated);}}/>
                 </div>
             </div>
 

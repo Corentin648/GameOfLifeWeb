@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { faCopy, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './ChangeGridParamsForm.css';
-import { SubmitButton } from './components/button/SubmitButton.tsx';
+import { SubmitButton } from './components/button/submit_button/SubmitButton.tsx';
 
 export const ChangeGridParamsForm = ({ setShowChangeRulesModal, setGridParams, setGameIsRunning }) => {
     const [updateGridParams, setUpdateGridParams] = useState({

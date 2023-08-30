@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { SubmitButton } from './components/button/SubmitButton.tsx';
+import { SubmitButton } from './components/button/submit_button/SubmitButton.tsx';
 
 export const ChangeRulesModal = ({ showModal, setShowModal, setRules }) => {
     const [updateRules, setUpdateRules] = useState({

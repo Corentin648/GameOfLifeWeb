@@ -1,0 +1,36 @@
+.button-wrapper{
+    transition: transform 0.4s cubic-bezier(.5,2.5,.7,.7);
+
+    &:hover {
+        transform: translateY(-5px);
+    }
+
+    .bounce-button {
+        padding: 4px;
+        position: relative;
+        background-color: white;
+        border: 2px solid black;
+        border-radius: 6px;
+
+        &::before {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: -2px;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            background-color: black;
+            border-bottom: 2px solid black;
+            border-left: 2px solid black;
+            border-right: 2px solid black;
+            box-sizing: content-box;
+            transition: bottom 0.4s cubic-bezier(.5,2.5,.7,.7);
+            z-index: -1;
+        }
+
+        &:hover::before {
+            bottom: -7px;
+        }
+    }
+}
