@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { SubmitButton } from './components/button/SubmitButton.tsx';
 
 export const ChangeRulesModal = ({ showModal, setShowModal, setRules }) => {
     const [updateRules, setUpdateRules] = useState({
@@ -93,9 +94,7 @@ export const ChangeRulesModal = ({ showModal, setShowModal, setRules }) => {
                             <input className={inputTextStyle()} type="text" value={updateRules.neighborsRangeBorn} onChange={handleUpdateBorn} />
                             <label className={'text-gray-500'}>Exemple: 3</label>
                         </div>
-                        <button className={'self-end p-1 border-2 border-black rounded-md hover:bg-gray-200 hover:delay-150'} type="submit">
-                            Mettre à jour
-                        </button>
+                        <SubmitButton label={'Mettre à jour'} styleProperties={'self-end'} />
                     </form>
                 </div>
             </div>

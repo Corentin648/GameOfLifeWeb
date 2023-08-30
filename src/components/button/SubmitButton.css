@@ -1,5 +1,6 @@
-.bubble-button {
+.submit-button {
     width: fit-content;
+    padding: 8px 8px;
     position: relative;
     transition: color 0.5s;
     overflow: hidden;
