@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { faCopy, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SubmitButton } from './components/button/submit_button/SubmitButton.tsx';
+import { GridParams } from './shared/models/GridParams.ts';
 
 export const ChangeGridParamsForm = ({ setShowChangeRulesModal, setGridParams, setGameIsRunning }) => {
     const [updateGridParams, setUpdateGridParams] = useState({
@@ -24,11 +25,14 @@ export const ChangeGridParamsForm = ({ setShowChangeRulesModal, setGridParams, s
         const newTileSizeChecked = !isNaN(newTileSize) && newTileSize.toString() === updateGridParams.tileSize;
 
         if (newWidthTilesCountChecked && newHeightTilesCountChecked && newTileSizeChecked) {
-            setGridParams({
+            const newGridParams : GridParams = {
                 widthTilesCount: newWidthTilesCount,
                 heightTilesCount: newHeightTilesCount,
                 tileSize: newTileSize,
-            });
+            };
+
+            setGridParams(newGridParams);
+            localStorage.setItem('gridParams', JSON.stringify(newGridParams));
             setGameIsRunning(false);
         } else {
             console.log('yoyoyo');
@@ -60,7 +64,7 @@ export const ChangeGridParamsForm = ({ setShowChangeRulesModal, setGridParams, s
     };
 
     const handleRestoreDefaultParams = () => {
-        //localStorage.clear();
+        localStorage.removeItem('gridParams');
         window.location.reload();
     };
 

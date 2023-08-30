@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import './Quadrillage.css';
 import { faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
-import { DEFAULT_WIDTH_TILES_COUNT, DEFAULT_HEIGHT_TILES_COUNT, DEFAULT_TILE_SIZE } from './shared/utils/gridUtils';
+import {
+    DEFAULT_GRID_PARAMS
+} from './shared/utils/gridUtils';
 import { drawSquares, initDrawing, manuallyUpdateSquare } from './shared/utils/drawingUtils';
 import { evolve, initPattern } from './shared/utils/matrixUtils';
 import { ChangeRulesModal } from './ChangeRulesModal';
@@ -16,11 +18,10 @@ const Grid = () => {
 
     const [addSquaresActivated, setAddSquaresActivated] = useState(false);
 
-    const [gridParams, setGridParams] = useState<GridParams>({
-        widthTilesCount: DEFAULT_WIDTH_TILES_COUNT,
-        heightTilesCount: DEFAULT_HEIGHT_TILES_COUNT,
-        tileSize: DEFAULT_TILE_SIZE,
-    });
+    const localStorageGridParams = localStorage.getItem('gridParams');
+    const definedGridParams = localStorageGridParams ? JSON.parse(localStorageGridParams) as GridParams : DEFAULT_GRID_PARAMS;
+
+    const [gridParams, setGridParams] = useState<GridParams>(definedGridParams);
 
     const [rules, setRules] = useState({
         neighborsRangeStayAlive: [2, 3],

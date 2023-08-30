@@ -12,7 +12,7 @@
 * [x] améliorer les algos
     * [x] changer le système de matrices
 
-* [ ] restructurer encore le code
+* [x] restructurer encore le code
     * [x] ajouter prettier
 
-* [ ] ajouter un local storage pour les params
+* [x] ajouter un local storage pour les params
